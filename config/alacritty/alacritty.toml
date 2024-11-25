@@ -1,0 +1,20 @@
+[font]
+size = 12.0
+normal = { family = "MesloLGS NF", style = "Regular"}
+italic = { family = "MesloLGS NF", style = "Italic"}
+bold = { family = "MesloLGS NF", style = "Bold"}
+bold_italic = { family = "MesloLGS NF", style = "Bold Italic"}
+offset = { x = 0, y = 0 }
+glyph_offset = { x = 1, y = 0 }
+
+[window]
+padding = { x = 10, y = 10 }
+
+[keyboard]
+bindings = [
+  { key = "Left",  mods = "Alt",     chars = "\u001bB"   },
+  { key = "Right", mods = "Alt",     chars = "\u001bF"   },
+  { key = "Left",  mods = "Command", chars = "\u001bOH"  },
+  { key = "Right", mods = "Command", chars =  "\u001bOF" },
+  { key = "Back",  mods = "Command", chars = "\u0015"    },
+]

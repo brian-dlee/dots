@@ -60,6 +60,16 @@ Add the following line your tmux config: `$HOME/.tmux.conf`
 source-file ~/dots/config/tmux/tmux.conf
 ```
 
+## Fonts
+
+You'll see that a Nerd Font is recommended for configurations like this. I use Powerlevel10k which recommends a very specific font patched just for this zsh theme. It's called "Menlo LGS NF". You can install it by downloading the files from the Powerlevel 10k Github page or by downloading the Homebrew tap `font-meslo-for-powerlevel10k`.
+
+[Powerlevel10k Fonts](https://github.com/romkatv/powerlevel10k?tab=readme-ov-file#meslo-nerd-font-patched-for-powerlevel10k)
+[Nerd Fonts](https://www.nerdfonts.com/)
+
+_Note: Nerd Fonts can be downloaded and installed from the website and via Homebrew as they all have individual taps_
+
+
 ## Compile and install the custom tools
 
 _Note: This requires an available installation of Go to compile the tools_
