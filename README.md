@@ -1,6 +1,16 @@
 # dots - my dot files
 
-## Recommended extras that I do not provide
+## How to use this
+
+Within the `config` directory of this project, I'll include various 
+application configuration files. I won't go into details on how you 
+should install this. Copy it, link it, source it... pick your poison. 
+
+Personally, I'll either source it or link it. It depends on the individual config,
+but I probably want my config to be live so I can easily commit
+changes back to this repository.
+
+## Recommended extras
 
 ### asdf - https://asdf-vm.com/
 
@@ -29,16 +39,6 @@ _Note: If you won't be using neovim you better remove or override the `export ED
 No single tool has made git tasks faster than `lazygit`. This thing is amazing. With 5 keystrokes, I can 
 commit a branch and open a PR against a custom target branch. That's not including my commit message
 or typing of my branch name of course. Let's not get carried away.
-
-## How to use this
-
-Within the `config` directory of this project, I'll include various 
-application configuration files. I won't go into details on how you 
-should install this. Copy it, link it, source it... pick your poison. 
-
-Personally, I'll either source it or link it. It depends on the individual config,
-but I probably want my config to be live so I can easily commit
-changes back to this repository.
 
 ## Fonts
 
