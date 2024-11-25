@@ -30,35 +30,15 @@ No single tool has made git tasks faster than `lazygit`. This thing is amazing. 
 commit a branch and open a PR against a custom target branch. That's not including my commit message
 or typing of my branch name of course. Let's not get carried away.
 
-## Install Guide
+## How to use this
 
-1. Clone this repository (duh)
+Within the `config` directory of this project, I'll include various 
+application configuration files. I won't go into details on how you 
+should install this. Copy it, link it, source it... pick your poison. 
 
-Start by cloning this repository to your home directory: `~/dots`
-
-2. Configure `zsh`
-
-Add `source $HOME/dots/zsh/zshrc.zsh` to your `$HOME/.zshrc`
-
-3. Create your `.local` and `.config` directories if they don't exist
-
-```shell
-mkdir -p "$HOME/.local/bin" "$HOME/.config"
-```
-
-4. Link the neovim config
-
-```shell
-$ ln -s "../dots/config/nvim" "$HOME/.config/nvim"
-```
-
-5. Source the tmux config
-
-Add the following line your tmux config: `$HOME/.tmux.conf`
-
-```tmux
-source-file ~/dots/config/tmux/tmux.conf
-```
+Personally, I'll either source it or link it. It depends on the individual config,
+but I probably want my config to be live so I can easily commit
+changes back to this repository.
 
 ## Fonts
 
