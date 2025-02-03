@@ -7,5 +7,6 @@ foo.*
 *.log
 data
 
-lazy-lock.json
-lazyvim.json
+/lazy
+/lazy-lock.json
+/lazyvim.json
