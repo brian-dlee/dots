@@ -32,6 +32,9 @@ if [[ -f "$HOME/.p10k.zsh" ]]; then
   source "$HOME/.p10k.zsh"
 fi
 
+# add some color to directory listing
+export LSCOLORS=exfxcxdxbxegedabagacad
+
 # zsh customizations
 [[ ! -f "$HOME/.config/zsh/common-aliases.zsh" ]] || source "$HOME/.config/zsh/common-aliases.zsh"
 

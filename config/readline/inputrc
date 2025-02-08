@@ -1,0 +1,33 @@
+set meta-flag on
+set editing-mode vi
+
+# Allow UTF-8 input and output, instead of showing stuff like $'\0123\0456'
+set input-meta on
+set output-meta on
+set convert-meta off
+
+# Perform file completion in a case insensitive fashion
+set completion-ignore-case on
+# Display matches for ambiguous patterns at first tab press
+set show-all-if-ambiguous on
+set bell-style none
+set print-completions-horizontally off
+set expand-tilde on
+
+# Be more intelligent when autocompleting by also looking at the text after
+# the cursor. For example, when the current line is "cd ~/src/mozil", and
+# the cursor is on the "z", pressing Tab will not autocomplete it to "cd
+# ~/src/mozillail", but to "cd ~/src/mozilla". (This is supported by the
+# Readline used by Bash 4.)
+set skip-completed-text on
+
+# Use Alt/Meta + Delete to delete the preceding word
+"\e[3;3~": kill-word
+
+# Use Ctrl + P and Ctrl + N for searching through commands
+"\C-p": history-search-backward
+"\C-n": history-search-forward
+
+# Use Ctrl + H and Ctrl + F for moving the cursor by word
+"\C-h": backward-word
+"\C-f": forward-word
