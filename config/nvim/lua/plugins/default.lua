@@ -169,6 +169,7 @@ return {
         "python",
         "query",
         "regex",
+        "terraform",
         "tsx",
         "typescript",
         "vim",
@@ -197,14 +198,15 @@ return {
     "williamboman/mason.nvim",
     opts = function(_, opts)
       vim.list_extend(opts.ensure_installed, {
+        "biome",
         "eslint-lsp",
         "gopls",
         "prettier",
-        "pyright",
-        "stylua",
+        "ruff",
         "shellcheck",
         "shfmt",
-        "flake8",
+        "stylua",
+        "terraform-ls",
       })
     end,
   },
