@@ -163,6 +163,7 @@ return {
         "html",
         "javascript",
         "json",
+        "just",
         "lua",
         "markdown",
         "markdown_inline",
