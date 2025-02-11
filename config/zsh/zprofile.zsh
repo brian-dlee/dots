@@ -18,6 +18,7 @@ if [[ -d "$HOME/.asdf" ]]; then
   [[ -d "$HOME/.asdf/plugins/java" ]] && source ~/.asdf/plugins/java/set-java-home.zsh
 fi
 
+export CLICOLOR=1
 export LSCOLORS=exfxcxdxbxegedabagacad
 export EDITOR=nvim
 export PATH="$HOME/.local/bin:$PATH"
