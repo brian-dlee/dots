@@ -80,11 +80,7 @@ return {
           -- eslint/prettier/biome
           client.server_capabilities.documentFormattingProvider = false
           client.server_capabilities.documentRangeFormattingProvider = false
-          client.server_capabilities.documentOnTypeFormattingProvider = false
         end,
-        settings = {
-          expose_as_code_action = { "all" },
-        },
       })
     end,
   },
