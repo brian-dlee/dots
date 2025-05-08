@@ -20,6 +20,12 @@ return {
     },
   },
 
+  -- mason (revert to 1.0.0 until bug is fixed)
+  -- https://github.com/LazyVim/LazyVim/issues/6039
+  { "mason-org/mason.nvim", version = "^1.0.0" },
+  { "mason-org/mason-lspconfig.nvim", version = "^1.0.0" },
+  "neovim/nvim-lspconfig",
+
   -- trouble
   {
     "folke/trouble.nvim",
@@ -93,7 +99,7 @@ return {
       "rcarriga/nvim-dap-ui",
       "theHamsta/nvim-dap-virtual-text",
       "nvim-neotest/nvim-nio",
-      "williamboman/mason.nvim",
+      "mason-org/mason.nvim",
     },
   },
 
@@ -138,15 +144,18 @@ return {
 
   -- add any tools you want to have installed below
   {
-    "williamboman/mason.nvim",
+    "mason-org/mason.nvim",
     opts = function(_, opts)
       vim.list_extend(opts.ensure_installed, {
+        "basedpyright",
         "biome",
+        "dockerfile-language-server",
         "eslint-lsp",
         "gofumpt",
         "goimports",
         "golangci-lint",
         "gopls",
+        "lua-language-server",
         "prettier",
         "prisma-language-server",
         "ruff",
