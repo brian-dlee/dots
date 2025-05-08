@@ -11,12 +11,14 @@ command -v direnv >/dev/null 2>&1 && eval "$(direnv hook zsh)"
 if [[ -d "$HOME/.asdf" ]]; then
   source "$HOME/.asdf/asdf.sh"
   fpath=(${ASDF_DIR}/completions $fpath)
-  autoload -Uz compinit && compinit
 
   # asdf plugins
   [[ -d "$HOME/.asdf/plugins/golang" ]] && source ~/.asdf/plugins/golang/set-env.zsh
   [[ -d "$HOME/.asdf/plugins/java" ]] && source ~/.asdf/plugins/java/set-java-home.zsh
 fi
+
+# initialize zsh completions
+autoload -Uz compinit && compinit
 
 export CLICOLOR=1
 export LSCOLORS=exfxcxdxbxegedabagacad
