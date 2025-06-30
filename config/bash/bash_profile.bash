@@ -1,5 +1,5 @@
-# zsh customizations
-[[ ! -f "$HOME/.config/zsh/common-aliases.zsh" ]] || source "$HOME/.config/zsh/common-aliases.zsh"
+# bash customizations
+[[ ! -f "$HOME/.config/bash/customizations/common-aliases.bash" ]] || source "$HOME/.config/bash/customizations/common-aliases.bash"
 
 # homebrew
 if [[ "$(uname)" == "Darwin" ]]; then
@@ -11,20 +11,17 @@ if [[ "$(uname)" == "Darwin" ]]; then
 fi
 
 # direnv
-command -v direnv >/dev/null 2>&1 && eval "$(direnv hook zsh)"
+command -v direnv >/dev/null 2>&1 && eval "$(direnv hook bash)"
 
 # asdf
 if [[ -d "$HOME/.asdf" ]]; then
   source "$HOME/.asdf/asdf.sh"
-  fpath=(${ASDF_DIR}/completions $fpath)
+  source "$HOME/.asdf/completions/asdf.bash"
 
   # asdf plugins
-  [[ -d "$HOME/.asdf/plugins/golang" ]] && source ~/.asdf/plugins/golang/set-env.zsh
-  [[ -d "$HOME/.asdf/plugins/java" ]] && source ~/.asdf/plugins/java/set-java-home.zsh
+  [[ -f "$HOME/.asdf/plugins/golang/set-env.bash" ]] && source "$HOME/.asdf/plugins/golang/set-env.bash"
+  [[ -f "$HOME/.asdf/plugins/java/set-java-home.bash" ]] && source "$HOME/.asdf/plugins/java/set-java-home.bash"
 fi
-
-# initialize zsh completions
-autoload -Uz compinit && compinit
 
 export CLICOLOR=1
 export LSCOLORS=exfxcxdxbxegedabagacad
@@ -33,5 +30,4 @@ export PATH="$HOME/.local/bin:$PATH"
 
 # when using tmux reverse search is not working
 # I'm not sure why I need this, but it corrects the issue
-bindkey '^R' history-incremental-search-backward
-
+bind '"\C-r": reverse-search-history'
