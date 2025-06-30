@@ -26,6 +26,13 @@ else
   echo "Installed readline configuration." >&2
 fi
 
+if [[ -e ~/.dircolors ]]; then
+  echo "$HOME/.dircolors exists. Skipping install." >&2
+else
+  ln -s "$root_path/config/dircolors/dircolors" "$HOME/.dircolors"
+  echo "Installed dircolors configuration." >&2
+fi
+
 # Install shell configuration based on current shell
 current_shell=$(basename "$SHELL")
 
