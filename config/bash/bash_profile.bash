@@ -1,6 +1,9 @@
 # bash customizations
 [[ ! -f "$HOME/.config/bash/customizations/common-aliases.bash" ]] || source "$HOME/.config/bash/customizations/common-aliases.bash"
 
+# source bashrc for interactive settings
+[[ -f "$HOME/.bashrc" ]] && source "$HOME/.bashrc"
+
 # homebrew
 if [[ "$(uname)" == "Darwin" ]]; then
   if [[ -f /opt/homebrew/bin/brew ]]; then
@@ -15,8 +18,13 @@ command -v direnv >/dev/null 2>&1 && eval "$(direnv hook bash)"
 
 # asdf
 if [[ -d "$HOME/.asdf" ]]; then
-  source "$HOME/.asdf/asdf.sh"
-  source "$HOME/.asdf/completions/asdf.bash"
+  if [[ -f "$HOME/.asdf/asdf.sh" ]]; then
+    source "$HOME/.asdf/asdf.sh"
+    source "$HOME/.asdf/completions/asdf.bash"
+  else
+    export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
+    source <(asdf completion bash)
+  fi
 
   # asdf plugins
   [[ -f "$HOME/.asdf/plugins/golang/set-env.bash" ]] && source "$HOME/.asdf/plugins/golang/set-env.bash"

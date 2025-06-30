@@ -15,8 +15,13 @@ command -v direnv >/dev/null 2>&1 && eval "$(direnv hook zsh)"
 
 # asdf
 if [[ -d "$HOME/.asdf" ]]; then
-  source "$HOME/.asdf/asdf.sh"
-  fpath=(${ASDF_DIR}/completions $fpath)
+  if [[ -f "$HOME/.asdf/asdf.sh" ]]; then
+    source "$HOME/.asdf/asdf.sh"
+    fpath=(${ASDF_DIR}/completions $fpath)
+  else
+    export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
+    source <(asdf completion zsh)
+  fi
 
   # asdf plugins
   [[ -d "$HOME/.asdf/plugins/golang" ]] && source ~/.asdf/plugins/golang/set-env.zsh
