@@ -165,6 +165,7 @@ return {
         "sqlfmt",
         "templ",
         "terraform-ls",
+        "typescript-language-server",
       })
     end,
   },
