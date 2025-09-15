@@ -1,15 +1,27 @@
 # zsh customizations
 [[ ! -f "$HOME/.config/zsh/common-aliases.zsh" ]] || source "$HOME/.config/zsh/common-aliases.zsh"
 
-# brew
-[[ -f /opt/homebrew/bin/brew ]] && eval "$(/opt/homebrew/bin/brew shellenv)"
+# homebrew
+if [[ "$(uname)" == "Darwin" ]]; then
+  if [[ -f /opt/homebrew/bin/brew ]]; then
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+  elif [[ -f /usr/local/bin/brew ]]; then
+    eval "$(/usr/local/bin/brew shellenv)"
+  fi
+fi
 
 # direnv
 command -v direnv >/dev/null 2>&1 && eval "$(direnv hook zsh)"
 
 # asdf
 if [[ -d "$HOME/.asdf" ]]; then
-  fpath=(${ASDF_DATA_DIR:-$HOME/.asdf}/completions $fpath)
+  if [[ -f "$HOME/.asdf/asdf.sh" ]]; then
+    source "$HOME/.asdf/asdf.sh"
+    fpath=(${ASDF_DIR}/completions $fpath)
+  else
+    export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
+    source <(asdf completion zsh)
+  fi
 
   # asdf plugins
   # this next line is recommended by the author, but it prevents customization of the GOBIN variable

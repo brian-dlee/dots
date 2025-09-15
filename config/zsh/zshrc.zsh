@@ -22,6 +22,11 @@ zinit ice depth=1
 zinit load romkatv/powerlevel10k
 zinit snippet OMZL::directories.zsh
 
+# Enable color support for ls and other commands
+if [ -x /usr/bin/dircolors ]; then
+    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+fi
+
 # load the powerlevel19k config
 if [[ -f "$HOME/.p10k.zsh" ]]; then
   source "$HOME/.p10k.zsh"

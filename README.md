@@ -1,14 +1,68 @@
 # dots - my dot files
 
-## How to use this
+## Quick Install
 
-Within the `config` directory of this project, I'll include various 
-application configuration files. I won't go into details on how you 
-should install this. Copy it, link it, source it... pick your poison. 
+```bash
+git clone <repository-url> ~/.dots
+cd ~/.dots
+./install.sh
+```
 
-Personally, I'll either source it or link it. It depends on the individual config,
-but I probably want my config to be live so I can easily commit
-changes back to this repository.
+This will install all configuration files and custom tools. Restart your shell or source your config when done.
+
+## What's Included
+
+### Configuration Files (`config/`)
+
+- **alacritty** - Terminal emulator configuration
+- **bash** - Bash shell configuration with aliases
+- **dircolors** - Custom color scheme for `ls` command  
+- **ghostty** - Ghostty terminal configuration
+- **nvim** - Neovim editor configuration (LazyVim-based)
+- **p10k** - Powerlevel10k theme configuration
+- **readline** - Input configuration for bash/readline
+- **tmux** - Terminal multiplexer configuration
+- **zsh** - Zsh shell configuration with aliases
+
+### Custom Tools (`tools/`)
+
+- **prettypath** - Path formatter for tmux and shell prompts
+- **urlencode** - URL encoding utility for shell
+
+## Manual Installation
+
+If you prefer manual installation or want to install specific components:
+
+### Configuration Files Only
+```bash
+./install_all_config.sh
+```
+
+### Custom Tools Only
+```bash
+# Requires Go to be installed
+./tools/prettypath/install.sh
+./tools/urlencode/install.sh
+```
+
+## Configuration Details
+
+### Shell Configuration
+- Both bash and zsh configurations include:
+  - Color support with dircolors
+  - Common aliases for ls, grep, etc.
+  - History settings and completion
+  - Custom prompt configuration
+
+### Color Support
+- Linux-compatible LS_COLORS via dircolors
+- Color-enabled aliases for ls commands
+- Supports custom color schemes via ~/.dircolors
+
+### Editor Integration
+- Neovim configuration based on LazyVim
+- Tmux integration with editor
+- Shell EDITOR variable set to nvim
 
 ## Recommended extras
 
@@ -50,16 +104,16 @@ You'll see that a Nerd Font is recommended for configurations like this. I use P
 _Note: Nerd Fonts can be downloaded and installed from the website and via Homebrew as they all have individual taps_
 
 
-## Compile and install the custom tools
+## Requirements
 
-_Note: This requires an available installation of Go to compile the tools_
+- **Git** - For cloning the repository
+- **Go** (optional) - Required only for compiling custom tools
+- **Bash or Zsh** - Supported shells
+- **Nerd Font** - For proper display of special characters (see Fonts section)
 
-```shell
-# By default, these install into $HOME/.local/bin
+## Installation Notes
 
-# install urlencode a shell utility for url-encoding strings
-$HOME/dots/tools/urlencode/install.sh
-
-# install prettypath for use by the tmux and zsh prompt
-$HOME/dots/tools/prettypath/install.sh
-```
+- Configuration files are symlinked, not copied, so changes sync with the repository
+- Custom tools install to `~/.local/bin` by default
+- Shell configurations are sourced from existing config files when possible
+- The installer checks for existing files and won't overwrite them
