@@ -1,0 +1,80 @@
+return {
+  -- {
+  --   "ravitemer/mcphub.nvim",
+  --   dependencies = {
+  --     "nvim-lua/plenary.nvim",
+  --   },
+  --   build = "npm install -g mcp-hub@latest", -- Installs `mcp-hub` node binary globally
+  --   config = function()
+  --     require("mcphub").setup()
+  --   end,
+  -- },
+  -- {
+  --   "yetone/avante.nvim",
+  --   event = "VeryLazy",
+  --   version = false, -- Never set this value to "*"! Never!
+  --   opts = {
+  --     provider = "claude",
+  --     providers = {
+  --       claude = {
+  --         endpoint = "https://api.anthropic.com",
+  --         model = "claude-sonnet-4-20250514",
+  --         extra_request_body = {
+  --           timeout = 30000,
+  --           temperature = 0.95,
+  --           max_completion_tokens = 8192,
+  --           reasoning_effort = "medium",
+  --         },
+  --       },
+  --     },
+  --   },
+  --   config = function()
+  --     require("avante").setup({
+  --       -- system_prompt as function ensures LLM always has latest MCP server state
+  --       -- This is evaluated for every message, even in existing chats
+  --       system_prompt = function()
+  --         local hub = require("mcphub").get_hub_instance()
+  --         return hub and hub:get_active_servers_prompt() or ""
+  --       end,
+  --       -- Using function prevents requiring mcphub before it's loaded
+  --       custom_tools = function()
+  --         return {
+  --           require("mcphub.extensions.avante").mcp_tool(),
+  --         }
+  --       end,
+  --     })
+  --   end,
+  --   build = "make",
+  --   dependencies = {
+  --     "nvim-treesitter/nvim-treesitter",
+  --     "stevearc/dressing.nvim",
+  --     "nvim-lua/plenary.nvim",
+  --     "MunifTanjim/nui.nvim",
+  --     {
+  --       -- support for image pasting
+  --       "HakonHarnes/img-clip.nvim",
+  --       event = "VeryLazy",
+  --       opts = {
+  --         -- recommended settings
+  --         default = {
+  --           embed_image_as_base64 = false,
+  --           prompt_for_file_name = false,
+  --           drag_and_drop = {
+  --             insert_mode = true,
+  --           },
+  --           -- required for Windows users
+  --           use_absolute_path = true,
+  --         },
+  --       },
+  --     },
+  --     {
+  --       -- Make sure to set this up properly if you have lazy=true
+  --       "MeanderingProgrammer/render-markdown.nvim",
+  --       opts = {
+  --         file_types = { "markdown", "Avante" },
+  --       },
+  --       ft = { "markdown", "Avante" },
+  --     },
+  --   },
+  -- },
+}
