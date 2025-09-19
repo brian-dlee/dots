@@ -109,7 +109,6 @@ return {
   {
     "nvim-treesitter/nvim-treesitter",
     opts = function(_, opts)
-      -- add tsx and treesitter
       vim.list_extend(opts.ensure_installed, {
         "bash",
         "html",
@@ -135,22 +134,14 @@ return {
     end,
   },
 
-  -- the opts function can also be used to change the default opts:
-  -- {
-  --   "nvim-lualine/lualine.nvim",
-  --   event = "VeryLazy",
-  --   opts = function(_, opts)
-  --     table.insert(opts.sections.lualine_x, "😄")
-  --   end,
-  -- },
-
-  -- add any tools you want to have installed below
+  -- mason
   {
     "mason-org/mason.nvim",
     opts = function(_, opts)
       vim.list_extend(opts.ensure_installed, {
         "basedpyright",
         "biome",
+        "deno",
         "dockerfile-language-server",
         "eslint-lsp",
         "eslint_d",
@@ -166,19 +157,12 @@ return {
         "shfmt",
         "stylua",
         "sqlfmt",
+        "taplo",
         "templ",
         "terraform-ls",
         "typescript-language-server",
+        "yamlfmt",
       })
-    end,
-  },
-
-  -- Use <tab> for completion and snippets (supertab)
-  -- first: disable default <tab> and <s-tab> behavior in LuaSnip
-  {
-    "L3MON4D3/LuaSnip",
-    keys = function()
-      return {}
     end,
   },
 }

@@ -1,4 +1,4 @@
-local js_and_ts_formatters = function(bufnr)
+local function js_and_ts_formatters(bufnr)
   local dirname = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(bufnr), ":p:h")
 
   if vim.fs.root(dirname, { "deno.json", "deno.jsonc" }) then
@@ -26,12 +26,12 @@ return {
 
       formatters_by_ft = {
         javascript = js_and_ts_formatters,
+        javascriptreact = js_and_ts_formatters,
+        lua = { "stylua" },
+        python = { "ruff_format" },
         typescript = js_and_ts_formatters,
-      },
-
-      format_on_save = {
-        lsp_fallback = true,
-        timeout_ms = 500,
+        typescriptreact = js_and_ts_formatters,
+        ["_"] = { "trim_whitespace" },
       },
     },
   },
