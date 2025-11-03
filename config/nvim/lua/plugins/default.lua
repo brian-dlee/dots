@@ -20,28 +20,22 @@ return {
     },
   },
 
-  -- neo-tree
+  -- snacks explorer config (over neo-tree)
   {
-    "nvim-neo-tree/neo-tree.nvim",
-    dependencies = {
-      "nvim-lua/plenary.nvim",
-      "MunifTanjim/nui.nvim",
-      "nvim-tree/nvim-web-devicons",
-      "antosha417/nvim-lsp-file-operations",
-    },
-    opts = {
-      filesystem = {
-        filtered_items = {
-          visible = true,
-          hide_dotfiles = false,
-          hide_gitignored = true,
-          never_show = {
-            ".git",
-          },
-        },
-      },
-    },
-    lazy = false,
+    "folke/snacks.nvim",
+    opts = function(_, opts)
+      -- merge your overrides into existing picker/explorer options
+      opts.picker = opts.picker or {}
+      opts.picker.sources = opts.picker.sources or {}
+      opts.picker.sources.explorer = vim.tbl_deep_extend("force", opts.picker.sources.explorer or {}, {
+        hidden = true, -- show dotfiles
+        ignored = false, -- hide gitignored files
+        git_status = true,
+        diagnostics = true,
+        follow_file = true,
+        exclude = { "**/.git/**" },
+      })
+    end,
   },
 
   -- trouble

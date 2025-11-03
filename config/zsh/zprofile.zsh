@@ -10,6 +10,11 @@ if [[ "$(uname)" == "Darwin" ]]; then
   fi
 fi
 
+export CLICOLOR=1
+export LSCOLORS=exfxcxdxbxegedabagacad
+export EDITOR=nvim
+export PATH="$HOME/.local/bin:$PATH"
+
 # direnv
 command -v direnv >/dev/null 2>&1 && eval "$(direnv hook zsh)"
 
@@ -32,11 +37,6 @@ fi
 
 # initialize zsh completions
 autoload -Uz compinit && compinit
-
-export CLICOLOR=1
-export LSCOLORS=exfxcxdxbxegedabagacad
-export EDITOR=nvim
-export PATH="$HOME/.local/bin:$PATH"
 
 # when using tmux reverse search is not working
 # I'm not sure why I need this, but it corrects the issue

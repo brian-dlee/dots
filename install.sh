@@ -21,7 +21,7 @@ version_gte() {
 
 # Function to install asdf plugins
 install_asdf_plugins() {
-  local plugins=("golang" "nodejs" "direnv" "python" "rust")
+  local plugins=("golang" "nodejs" "python" "rust")
   local existing_plugins
 
   echo "Installing asdf plugins..." >&2

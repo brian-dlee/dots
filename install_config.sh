@@ -34,7 +34,11 @@ else
 fi
 
 # Install shell configuration based on current shell
-current_shell=$(basename "$SHELL")
+if [[ $# -gt 0 ]]; then
+  current_shell=$1
+else
+  current_shell=$(basename "$SHELL")
+fi
 
 case "$current_shell" in
 zsh)

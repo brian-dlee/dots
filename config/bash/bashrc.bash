@@ -24,8 +24,11 @@ if ! shopt -oq posix; then
   fi
 fi
 
-# Simple PS1 prompt
-PS1='\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
+export EDITOR=nvim
+export PS1='\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
+export PATH="$HOME/.local/bin:$PATH"
+export CLICOLOR=1
+export LSCOLORS=exfxcxdxbxegedabagacad
 
 # asdf
 if [[ -d "$HOME/.asdf" ]]; then
@@ -56,11 +59,6 @@ fi
 
 # direnv
 command -v direnv >/dev/null 2>&1 && eval "$(direnv hook bash)"
-
-export CLICOLOR=1
-export LSCOLORS=exfxcxdxbxegedabagacad
-export EDITOR=nvim
-export PATH="$HOME/.local/bin:$PATH"
 
 # when using tmux reverse search is not working
 # I'm not sure why I need this, but it corrects the issue
