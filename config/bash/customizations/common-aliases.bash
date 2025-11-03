@@ -7,7 +7,7 @@ alias l='ls -lFh --color=auto'   #size,show type,human readable
 alias la='ls -lAFh --color=auto' #long list,show almost all,show type,human readable
 alias lr='ls -tRFh --color=auto' #sorted by date,recursive,show type,human readable
 alias lt='ls -ltFh --color=auto' #long list,sorted by date,show type,human readable
-alias ll='ls -l --color=auto'    #long list
+alias ll='ls -al --color=auto'   #long list
 alias ldot='ls -ld .* --color=auto'
 alias lS='ls -1FSsh --color=auto'
 alias lart='ls -1Fcart --color=auto'
@@ -38,20 +38,21 @@ alias mv='mv -i'
 
 # SSH host completion for bash
 _ssh_completion() {
-    local cur="${COMP_WORDS[COMP_CWORD]}"
-    local hosts=""
-    
-    # Read known hosts files
-    if [[ -f ~/.ssh/known_hosts ]]; then
-        hosts="$hosts $(awk '{print $1}' ~/.ssh/known_hosts 2>/dev/null | cut -d, -f1 | grep -v '^\[' | sort -u)"
-    fi
-    
-    if [[ -f /etc/ssh/ssh_known_hosts ]]; then
-        hosts="$hosts $(awk '{print $1}' /etc/ssh/ssh_known_hosts 2>/dev/null | cut -d, -f1 | grep -v '^\[' | sort -u)"
-    fi
-    
-    COMPREPLY=($(compgen -W "$hosts" -- "$cur"))
+  local cur="${COMP_WORDS[COMP_CWORD]}"
+  local hosts=""
+
+  # Read known hosts files
+  if [[ -f ~/.ssh/known_hosts ]]; then
+    hosts="$hosts $(awk '{print $1}' ~/.ssh/known_hosts 2>/dev/null | cut -d, -f1 | grep -v '^\[' | sort -u)"
+  fi
+
+  if [[ -f /etc/ssh/ssh_known_hosts ]]; then
+    hosts="$hosts $(awk '{print $1}' /etc/ssh/ssh_known_hosts 2>/dev/null | cut -d, -f1 | grep -v '^\[' | sort -u)"
+  fi
+
+  COMPREPLY=($(compgen -W "$hosts" -- "$cur"))
 }
 
 # Apply SSH completion
 complete -F _ssh_completion ssh scp sftp rsync
+
