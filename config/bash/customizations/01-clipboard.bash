@@ -1,9 +1,16 @@
-if [[ "$OSTYPE" == linux-* ]]; then
-  if command -v xsel 2>&1 >/dev/null; then
-    alias pbcopy="xsel --clipboard --input"
-    alias pbpaste="xsel --clipboard --output"
+if [[ "$OSTYPE" == darwin-* ]]; then
+  alias cbcp="pbcopy"
+  alias cbps="pbpaste"
+fi
 
-    alias xcp="xsel --clipboard --input"
-    alias xps="xsel --clipboard --output"
+if [[ "$OSTYPE" == linux-* ]]; then
+  if command -v wl-copy 2>&1 >/dev/null; then
+    alias pbcopy="wl-copy"
+    alias cbcp="wl-copy"
+  fi
+
+  if command -v wl-paste 2>&1 >/dev/null; then
+    alias pbpaste="wl-paste"
+    alias cbps="wl-paste"
   fi
 fi
