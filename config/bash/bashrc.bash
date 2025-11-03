@@ -46,7 +46,9 @@ if [[ -d "$HOME/.asdf" ]]; then
 fi
 
 # bash customizations
-[[ ! -f "$HOME/.config/bash/customizations/common-aliases.bash" ]] || source "$HOME/.config/bash/customizations/common-aliases.bash"
+for customization in "$HOME"/.config/bash/customizations/*.bash; do
+  source "$customization"
+done
 
 # homebrew
 if [[ "$(uname)" == "Darwin" ]]; then

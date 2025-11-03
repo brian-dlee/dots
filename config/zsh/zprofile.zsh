@@ -1,5 +1,7 @@
 # zsh customizations
-[[ ! -f "$HOME/.config/zsh/common-aliases.zsh" ]] || source "$HOME/.config/zsh/common-aliases.zsh"
+for customization in "$HOME"/.config/zsh/customizations/*.zsh; do
+  source "$customization"
+done
 
 # homebrew
 if [[ "$(uname)" == "Darwin" ]]; then
