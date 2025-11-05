@@ -18,7 +18,7 @@ autoload -Uz _zinit
 (( ${+_comps} )) && _comps[zinit]=_zinit
 ### End of Zinit's installer chunk
 
-zinit ice depth=1 
+zinit ice depth=1
 zinit load romkatv/powerlevel10k
 zinit snippet OMZL::directories.zsh
 
@@ -31,3 +31,7 @@ fi
 if [[ -f "$HOME/.p10k.zsh" ]]; then
   source "$HOME/.p10k.zsh"
 fi
+
+# zsh customizations
+[[ ! -f "$HOME/.config/zsh/common-aliases.zsh" ]] || source "$HOME/.config/zsh/common-aliases.zsh"
+[[ ! -f "$HOME/.config/zsh/eza.zsh" ]] || source "$HOME/.config/zsh/eza.zsh"
