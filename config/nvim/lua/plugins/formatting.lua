@@ -30,6 +30,7 @@ return {
         javascriptreact = js_and_ts_formatters,
         go = { "gofumpt" },
         lua = { "stylua" },
+        prisma = { "prismals" },
         python = { "ruff_format" },
         rust = { "rustfmt" },
         typescript = js_and_ts_formatters,
