@@ -27,6 +27,7 @@ return {
       formatters_by_ft = {
         javascript = js_and_ts_formatters,
         javascriptreact = js_and_ts_formatters,
+        go = { "gofumpt" },
         lua = { "stylua" },
         python = { "ruff_format" },
         typescript = js_and_ts_formatters,
