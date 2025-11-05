@@ -17,6 +17,7 @@ local function js_and_ts_formatters(bufnr)
 end
 
 return {
+  { "mini.pairs", enabled = false },
   {
     "stevearc/conform.nvim",
     opts = {
@@ -30,6 +31,7 @@ return {
         go = { "gofumpt" },
         lua = { "stylua" },
         python = { "ruff_format" },
+        rust = { "rustfmt" },
         typescript = js_and_ts_formatters,
         typescriptreact = js_and_ts_formatters,
         ["_"] = { "trim_whitespace" },

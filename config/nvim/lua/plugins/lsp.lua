@@ -3,37 +3,47 @@ local function find_deno_root_dir(fname)
 end
 
 local function find_typescript_root_dir(fname)
-  return require("lspconfig.util").root_pattern("tsconfig.json")(fname)
+  return require("lspconfig.util").root_pattern(
+    "package-lock.json",
+    "yarn.lock",
+    "pnpm-lock.yaml",
+    "bun.lockb",
+    "bun.lock"
+  )(fname)
 end
 
-local function resolve_deno_root_dir(fname)
+local function resolve_deno_root_dir(bufnr, on_dir)
+  local fname = vim.api.nvim_buf_get_name(bufnr)
+
   local deno_root_dir = find_deno_root_dir(fname)
   local typescript_root_dir = find_typescript_root_dir(fname)
 
-  if not deno_root_dir then
+  if not deno_root_dir or string.len(deno_root_dir) == 0 then
     return nil
   end
 
-  if typescript_root_dir and #typescript_root_dir > #deno_root_dir then
+  if typescript_root_dir and string.len(typescript_root_dir) > string.len(deno_root_dir) then
     return nil
   end
 
-  return deno_root_dir
+  on_dir(deno_root_dir)
 end
 
-local function resolve_typescript_root_dir(fname)
+local function resolve_typescript_root_dir(bufnr, on_dir)
+  local fname = vim.api.nvim_buf_get_name(bufnr)
+
   local deno_root_dir = find_deno_root_dir(fname)
   local typescript_root_dir = find_typescript_root_dir(fname)
 
-  if not typescript_root_dir then
+  if not typescript_root_dir or string.len(typescript_root_dir) == 0 then
+    return
+  end
+
+  if deno_root_dir and string.len(deno_root_dir) > string.len(typescript_root_dir) then
     return nil
   end
 
-  if deno_root_dir and #deno_root_dir > #typescript_root_dir then
-    return nil
-  end
-
-  return typescript_root_dir
+  on_dir(typescript_root_dir)
 end
 
 local function env_to_number(value, default)
@@ -47,13 +57,17 @@ end
 local ts_ls_max_memory = env_to_number(os.getenv("NEOVIM_LSP_TS_LS_MAX_TS_SERVER_MEMORY"), 4 * 1024)
 
 return {
-  "mason-org/mason.nvim",
+  {
+    "mason-org/mason.nvim",
+    version = "*",
+  },
   {
     "mason-org/mason-lspconfig.nvim",
     dependencies = {
       "neovim/nvim-lspconfig",
     },
     opts = {},
+    version = "*",
   },
 
   -- comment out until they upgrade to use the new lspconfig
