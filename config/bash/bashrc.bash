@@ -46,9 +46,9 @@ if [[ -d "$HOME/.asdf" ]]; then
 fi
 
 # bash customizations
-for customization in "$HOME"/.config/bash/customizations/*.bash; do
-  source "$customization"
-done
+[[ ! -f "$HOME/.config/bash/00-common-aliases.bash" ]] || source "$HOME/.config/bash/00-common-aliases.bash"
+[[ ! -f "$HOME/.config/bash/01-clipboard.bash" ]] || source "$HOME/.config/bash/01-clipboard.bash"
+[[ ! -f "$HOME/.config/bash/02-eza.bash" ]] || source "$HOME/.config/bash/02-eza.bash"
 
 # homebrew
 if [[ "$(uname)" == "Darwin" ]]; then

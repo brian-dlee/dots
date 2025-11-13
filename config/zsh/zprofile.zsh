@@ -1,8 +1,3 @@
-# zsh customizations
-for customization in "$HOME"/.config/zsh/customizations/*.zsh; do
-  source "$customization"
-done
-
 # homebrew
 if [[ "$(uname)" == "Darwin" ]]; then
   if [[ -f /opt/homebrew/bin/brew ]]; then
@@ -36,6 +31,11 @@ if [[ -d "$HOME/.asdf" ]]; then
   [[ -d "$HOME/.asdf/plugins/golang" ]] && source ~/.asdf/plugins/golang/set-env.zsh
   [[ -d "$HOME/.asdf/plugins/java" ]] && source ~/.asdf/plugins/java/set-java-home.zsh
 fi
+
+# zsh customizations
+[[ ! -f "$HOME/.config/zsh/00-common-aliases.zsh" ]] || source "$HOME/.config/zsh/00-common-aliases.zsh"
+[[ ! -f "$HOME/.config/zsh/01-clipboard.zsh" ]] || source "$HOME/.config/zsh/01-clipboard.zsh"
+[[ ! -f "$HOME/.config/zsh/02-eza.zsh" ]] || source "$HOME/.config/zsh/02-eza.zsh"
 
 # initialize zsh completions
 autoload -Uz compinit && compinit
