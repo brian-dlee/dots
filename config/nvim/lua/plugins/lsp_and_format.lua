@@ -56,7 +56,7 @@ local function js_and_ts_formatters(bufnr)
   end
 
   if vim.fs.root(dirname, { "package.json" }) then
-    return { "eslint", "prettier" }
+    return { "prettier" }
   end
 
   return {}
@@ -98,10 +98,6 @@ return {
     dependencies = { "nvim-lua/plenary.nvim", "neovim/nvim-lspconfig" },
     config = function()
       require("typescript-tools").setup({
-        on_attach = function(client, _)
-          client.server_capabilities.documentFormattingProvider = false
-          client.server_capabilities.documentRangeFormattingProvider = false
-        end,
         root_dir = resolve_typescript_root_dir,
         single_file_support = true,
       })
@@ -128,7 +124,7 @@ return {
         prismals = {},
         ruff_lsp = {},
         rust_analyzer = {},
-        taplo = {}, -- TOML
+        taplo = {},
         templ = {},
         terraformls = {},
         yamlls = {},
@@ -141,18 +137,18 @@ return {
     "stevearc/conform.nvim",
     opts = {
       default_format_opts = {
-        lsp_format = "prefer",
+        lsp_format = "first",
       },
       formatters_by_ft = {
         javascript = js_and_ts_formatters,
         javascriptreact = js_and_ts_formatters,
         typescript = js_and_ts_formatters,
         typescriptreact = js_and_ts_formatters,
-        json = { "prettier" },
-        jsonc = { "prettier" },
+        json = { "jq" },
+        jsonc = { "jq" },
         go = { "gofumpt" },
         lua = { "stylua" },
-        markdown = { "prettier" },
+        markdown = { "mdformat" },
         prisma = { "prisma_format" },
         python = { "ruff_format" },
         rust = { "rustfmt" },
@@ -171,7 +167,7 @@ return {
         },
         eslint = {
           command = "eslint",
-          args = { "--fix", "--stdin", "--stdin-filename", "$FILENAME" },
+          args = { "--stdin", "--stdin-filename", "$FILENAME" },
           stdin = true,
         },
       },
