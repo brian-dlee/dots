@@ -56,7 +56,7 @@ local function js_and_ts_formatters(bufnr)
   end
 
   if vim.fs.root(dirname, { "package.json" }) then
-    return { "eslint_d", "prettier" }
+    return { "eslint", "prettier" }
   end
 
   return {}
@@ -141,7 +141,7 @@ return {
     "stevearc/conform.nvim",
     opts = {
       default_format_opts = {
-        lsp_format = "fallback",
+        lsp_format = "prefer",
       },
       formatters_by_ft = {
         javascript = js_and_ts_formatters,
@@ -153,7 +153,7 @@ return {
         go = { "gofumpt" },
         lua = { "stylua" },
         markdown = { "prettier" },
-        prisma = { "prettier" },
+        prisma = { "prisma_format" },
         python = { "ruff_format" },
         rust = { "rustfmt" },
         sh = { "shfmt" },
@@ -162,6 +162,18 @@ return {
         toml = { "taplo" },
         yaml = { "yamlfmt" },
         ["_"] = { "trim_whitespace" },
+      },
+      formatters = {
+        prisma_format = {
+          command = "prisma",
+          args = { "format", "--schema", "$FILENAME" },
+          stdin = false,
+        },
+        eslint = {
+          command = "eslint",
+          args = { "--fix", "--stdin", "--stdin-filename", "$FILENAME" },
+          stdin = true,
+        },
       },
     },
   },
