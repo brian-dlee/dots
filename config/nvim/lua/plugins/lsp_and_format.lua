@@ -97,8 +97,25 @@ return {
     "pmizio/typescript-tools.nvim",
     dependencies = { "nvim-lua/plenary.nvim", "neovim/nvim-lspconfig" },
     config = function()
+      local settings = {}
+
+      local tsserver_max_memory_env = os.getenv("NEOVIM_LSP_TSSERVER_MAX_MEMORY")
+
+      if tsserver_max_memory_env ~= nil and tsserver_max_memory_env ~= "" then
+        vim.lsp.log.info(
+          string.format("Detected NEOVIM_LSP_TSSERVER_MAX_MEMORY=%s", vim.inspect(tsserver_max_memory_env))
+        )
+
+        local tsserver_max_memory = tonumber(tsserver_max_memory_env)
+
+        settings.tsserver_max_memory = tsserver_max_memory
+
+        vim.lsp.log.info(string.format("Updating tsserver_max_memory=%d", vim.inspect(tsserver_max_memory)))
+      end
+
       require("typescript-tools").setup({
         root_dir = resolve_typescript_root_dir,
+        settings = settings,
         single_file_support = true,
       })
     end,
@@ -107,6 +124,19 @@ return {
   -- LSP Configuration
   {
     "neovim/nvim-lspconfig",
+    init = function()
+      local debug = os.getenv("NEOVIM_LSP_DEBUG")
+
+      if debug == "1" then
+        vim.lsp.set_log_level("debug")
+
+        vim.lsp.log.debug("Log level is DEBUG [NEOVIM_LSP_DEBUG]")
+      else
+        vim.lsp.set_log_level("info")
+
+        vim.lsp.log.info("Log level is INFO [NEOVIM_LSP_DEBUG]")
+      end
+    end,
     opts = {
       servers = {
         basedpyright = {},
