@@ -71,9 +71,6 @@ local function resolve_jsts_file_tools(fname)
     prettier_root_dir_length = string.len(prettier_root_dir)
   end
 
-  vim.notify(string.format("ESLINT ROOT DIR: (len: %d) %s", eslint_root_dir_length, eslint_root_dir))
-  vim.notify(string.format("BIOME ROOT DIR: (len: %d) %s", biome_root_dir_length, biome_root_dir))
-
   local tools = {}
 
   if deno_root_dir_length > 0 and deno_root_dir_length > typescript_root_dir_length then
@@ -83,16 +80,11 @@ local function resolve_jsts_file_tools(fname)
   tools["tsc"] = typescript_root_dir
 
   if biome_root_dir_length > 0 and biome_root_dir_length > eslint_root_dir_length then
-    vim.notify("SELECTED biome")
     tools["biome"] = biome_root_dir
   elseif eslint_root_dir_length > 0 then
-    vim.notify("SELECTED eslint")
-
     tools["eslint"] = eslint_root_dir
 
     if prettier_root_dir_length > 0 then
-      vim.notify("ADDED prettier")
-
       tools["prettier"] = prettier_root_dir
     end
   else
