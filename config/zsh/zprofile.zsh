@@ -33,9 +33,9 @@ if [[ -d "$HOME/.asdf" ]]; then
 fi
 
 # zsh customizations
-[[ ! -f "$HOME/.config/zsh/00-common-aliases.zsh" ]] || source "$HOME/.config/zsh/00-common-aliases.zsh"
-[[ ! -f "$HOME/.config/zsh/01-clipboard.zsh" ]] || source "$HOME/.config/zsh/01-clipboard.zsh"
-[[ ! -f "$HOME/.config/zsh/02-eza.zsh" ]] || source "$HOME/.config/zsh/02-eza.zsh"
+[[ ! -f "$HOME/.config/zsh/customizations/00-common-aliases.zsh" ]] || source "$HOME/.config/zsh/customizations/00-common-aliases.zsh"
+[[ ! -f "$HOME/.config/zsh/customizations/01-clipboard.zsh" ]] || source "$HOME/.config/zsh/customizations/01-clipboard.zsh"
+[[ ! -f "$HOME/.config/zsh/customizations/02-eza.zsh" ]] || source "$HOME/.config/zsh/customizations/02-eza.zsh"
 
 # initialize zsh completions
 autoload -Uz compinit && compinit
