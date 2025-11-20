@@ -150,7 +150,6 @@ return {
     "mason-org/mason-lspconfig.nvim",
     opts = {
       ensure_installed = {
-        "docker_compose_language_service",
         "docker_language_server",
         "eslint",
         "lua_ls",
@@ -249,8 +248,7 @@ return {
           root_dir = tool_root_dir("deno"),
           single_file_support = false,
         },
-        docker_compose_language_service = {},
-        dockerls = {},
+        docker_language_server = {},
         eslint = {
           root_dir = tool_root_dir("eslint"),
           single_file_support = true,
