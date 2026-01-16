@@ -40,6 +40,27 @@ local function find_prettier_root_dir(fname)
   )(fname)
 end
 
+local function find_pyproject_root_dir(fname)
+  return require("lspconfig.util").root_pattern("pyproject.toml")(fname)
+end
+
+local function find_ty_root_dir(fname)
+  local root_dir = require("lspconfig.util").root_pattern("ty.toml")(fname)
+  if root_dir and root_dir ~= "" then
+    return root_dir
+  end
+
+  root_dir = require("lspconfig.util").root_pattern("pyproject.toml")(fname)
+
+  for line in io.lines(root_dir .. "/pyproject.toml") do
+    if line:match("^%s*%[tool%.ty%]") then
+      return root_dir
+    end
+  end
+
+  return nil
+end
+
 local function resolve_jsts_file_tools(fname)
   local deno_root_dir = find_deno_root_dir(fname)
   local deno_root_dir_length = 0
@@ -73,13 +94,13 @@ local function resolve_jsts_file_tools(fname)
 
   local tools = {}
 
-  if deno_root_dir_length > 0 and deno_root_dir_length > typescript_root_dir_length then
+  if deno_root_dir_length > 0 and deno_root_dir_length >= typescript_root_dir_length then
     return { deno = deno_root_dir }
   end
 
   tools["tsc"] = typescript_root_dir
 
-  if biome_root_dir_length > 0 and biome_root_dir_length > eslint_root_dir_length then
+  if biome_root_dir_length > 0 and biome_root_dir_length >= eslint_root_dir_length then
     tools["biome"] = biome_root_dir
   elseif eslint_root_dir_length > 0 then
     tools["eslint"] = eslint_root_dir
@@ -92,6 +113,26 @@ local function resolve_jsts_file_tools(fname)
   end
 
   return tools
+end
+
+local function resolve_python_file_tools(fname)
+  local pyproject_root_dir = find_pyproject_root_dir(fname)
+  local pyproject_root_dir_length = 0
+  if pyproject_root_dir and pyproject_root_dir ~= "" then
+    pyproject_root_dir_length = string.len(pyproject_root_dir)
+  end
+
+  local ty_root_dir = find_ty_root_dir(fname)
+  local ty_root_dir_length = 0
+  if ty_root_dir and ty_root_dir ~= "" then
+    ty_root_dir_length = string.len(ty_root_dir)
+  end
+
+  if ty_root_dir_length > 0 and ty_root_dir_length >= pyproject_root_dir_length then
+    return { ty = ty_root_dir }
+  end
+
+  return { basedpyright = pyproject_root_dir }
 end
 
 local function get_or_resolve_jsts_buffer_tools(bufnr)
@@ -113,9 +154,42 @@ local function get_or_resolve_jsts_buffer_tools(bufnr)
   return tools
 end
 
-local function tool_root_dir(tool)
+local function get_or_resolve_python_buffer_tools(bufnr)
+  bufnr = bufnr or vim.api.nvim_get_current_buf()
+
+  if vim.b[bufnr].project_tools then
+    return vim.b[bufnr].project_tools
+  end
+
+  local fname = vim.api.nvim_buf_get_name(bufnr)
+  if not fname or fname == "" then
+    return {}
+  end
+
+  local tools = resolve_python_file_tools(fname)
+
+  vim.b[bufnr].project_tools = tools
+
+  return tools
+end
+
+local function jsts_tool_root_dir(tool)
   local get_root_dir = function(bufnr, on_dir)
     local tools = get_or_resolve_jsts_buffer_tools(bufnr)
+
+    if tools[tool] == nil then
+      return nil
+    end
+
+    on_dir(tools[tool])
+  end
+
+  return get_root_dir
+end
+
+local function python_tool_root_dir(tool)
+  local get_root_dir = function(bufnr, on_dir)
+    local tools = get_or_resolve_python_buffer_tools(bufnr)
 
     if tools[tool] == nil then
       return nil
@@ -219,7 +293,7 @@ return {
       end
 
       require("typescript-tools").setup({
-        root_dir = tool_root_dir("tsc"),
+        root_dir = jsts_tool_root_dir("tsc"),
         settings = settings,
         single_file_support = true,
       })
@@ -244,28 +318,33 @@ return {
     end,
     opts = function(_, opts)
       opts.servers = vim.tbl_deep_extend("force", opts.servers or {}, {
-        basedpyright = {},
+        basedpyright = {
+          root_dir = python_tool_root_dir("basedpyright"),
+        },
         biome = {
-          root_dir = tool_root_dir("biome"),
+          root_dir = jsts_tool_root_dir("biome"),
           single_file_support = true,
         },
         denols = {
-          root_dir = tool_root_dir("deno"),
+          root_dir = jsts_tool_root_dir("deno"),
           single_file_support = false,
         },
         docker_language_server = {},
         eslint = {
-          root_dir = tool_root_dir("eslint"),
+          root_dir = jsts_tool_root_dir("eslint"),
           single_file_support = true,
         },
         golangci_lint_ls = {},
         gopls = {},
         lua_ls = {},
         prismals = {},
-        ruff_lsp = {},
+        ruff = {},
         rust_analyzer = {},
         taplo = {},
         templ = {},
+        ty = {
+          root_dir = python_tool_root_dir("ty"),
+        },
         terraformls = {},
         yamlls = {},
       })
