@@ -4,34 +4,62 @@ set -ue
 
 root_path=$(cd "$(dirname "$0")" && pwd)
 
-if [[ -e ~/.config/nvim ]]; then
-  echo "$HOME/.config/nvim exists. Skipping install." >&2
-else
-  mkdir -p ~/.config
-  ln -s "$root_path/config/nvim" "$HOME/.config/nvim"
-  echo "Installed nvim configuration." >&2
-fi
+# Helper to symlink a single file
+link_file() {
+  local src="$1" dest="$2" label="$3"
+  if [[ -e "$dest" ]]; then
+    echo "$dest exists. Skipping install." >&2
+  else
+    mkdir -p "$(dirname "$dest")"
+    ln -s "$src" "$dest"
+    echo "Installed $label." >&2
+  fi
+}
 
-if [[ -e ~/.tmux.conf ]]; then
-  echo "$HOME/.tmux.conf exists. Skipping install." >&2
-else
-  ln -s "$root_path/config/tmux/tmux.conf" "$HOME/.tmux.conf"
-  echo "Installed tmux configuration." >&2
-fi
+# Helper to symlink a directory
+link_dir() {
+  local src="$1" dest="$2" label="$3"
+  if [[ -e "$dest" ]]; then
+    echo "$dest exists. Skipping install." >&2
+  else
+    mkdir -p "$(dirname "$dest")"
+    ln -s "$src" "$dest"
+    echo "Installed $label." >&2
+  fi
+}
 
-if [[ -e ~/.inputrc ]]; then
-  echo "$HOME/.inputrc exists. Skipping install." >&2
-else
-  ln -s "$root_path/config/readline/inputrc" "$HOME/.inputrc"
-  echo "Installed readline configuration." >&2
-fi
+# Neovim
+link_dir "$root_path/config/nvim" "$HOME/.config/nvim" "nvim configuration"
 
-if [[ -e ~/.dircolors ]]; then
-  echo "$HOME/.dircolors exists. Skipping install." >&2
-else
-  ln -s "$root_path/config/dircolors/dircolors" "$HOME/.dircolors"
-  echo "Installed dircolors configuration." >&2
-fi
+# Tmux
+link_file "$root_path/config/tmux/tmux.conf" "$HOME/.tmux.conf" "tmux configuration"
+
+# Readline
+link_file "$root_path/config/readline/inputrc" "$HOME/.inputrc" "readline configuration"
+
+# Dircolors
+link_file "$root_path/config/dircolors/dircolors" "$HOME/.dircolors" "dircolors configuration"
+
+# Terminal emulators
+link_dir "$root_path/config/alacritty" "$HOME/.config/alacritty" "alacritty configuration"
+link_dir "$root_path/config/ghostty" "$HOME/.config/ghostty" "ghostty configuration"
+link_dir "$root_path/config/kitty" "$HOME/.config/kitty" "kitty configuration"
+
+# Hyprland (individual file symlinks — omarchy manages the directory)
+for conf in bindings input monitors envs looknfeel autostart hypridle hyprlock hyprsunset xdph; do
+  link_file "$root_path/config/hypr/$conf.conf" "$HOME/.config/hypr/$conf.conf" "hypr $conf configuration"
+done
+
+# Waybar
+link_dir "$root_path/config/waybar" "$HOME/.config/waybar" "waybar configuration"
+
+# Walker
+link_dir "$root_path/config/walker" "$HOME/.config/walker" "walker configuration"
+
+# Omarchy customizations (subdirectory symlinks — omarchy manages the parent)
+for subdir in hooks extensions branding; do
+  link_dir "$root_path/config/omarchy/$subdir" "$HOME/.config/omarchy/$subdir" "omarchy $subdir"
+done
 
 # Install shell configuration based on current shell
 if [[ $# -gt 0 ]]; then
