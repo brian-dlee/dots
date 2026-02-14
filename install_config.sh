@@ -4,28 +4,75 @@ set -ue
 
 root_path=$(cd "$(dirname "$0")" && pwd)
 
-# Helper to symlink a single file
-link_file() {
-  local src="$1" dest="$2" label="$3"
-  if [[ -e "$dest" ]]; then
-    echo "$dest exists. Skipping install." >&2
-  else
-    mkdir -p "$(dirname "$dest")"
-    ln -s "$src" "$dest"
-    echo "Installed $label." >&2
-  fi
+# Prompt for replacing an existing config
+# Usage: prompt_replace src dest label remove_cmd
+# Returns 0 if replaced, 1 if skipped
+prompt_replace() {
+  local src="$1" dest="$2" label="$3" remove_cmd="$4"
+  while true; do
+    read -r -p "Replace with repo version? [y]es (backup) / [Y]es (no backup) / [n]o: " choice </dev/tty
+    case "$choice" in
+      y)
+        mv "$dest" "${dest}.bak"
+        ln -s "$src" "$dest"
+        echo "Applied $label. Backup: ${dest}.bak" >&2
+        return 0
+        ;;
+      Y)
+        eval "$remove_cmd"
+        ln -s "$src" "$dest"
+        echo "Applied $label." >&2
+        return 0
+        ;;
+      n)
+        echo "Skipped $label." >&2
+        return 1
+        ;;
+      *)
+        echo "Please enter y, Y, or n." >&2
+        ;;
+    esac
+  done
 }
 
-# Helper to symlink a directory
-link_dir() {
+# Symlink a single file with interactive diff on conflict
+link_file() {
   local src="$1" dest="$2" label="$3"
-  if [[ -e "$dest" ]]; then
-    echo "$dest exists. Skipping install." >&2
-  else
+  if [[ ! -e "$dest" && ! -L "$dest" ]]; then
     mkdir -p "$(dirname "$dest")"
     ln -s "$src" "$dest"
     echo "Installed $label." >&2
+    return
   fi
+  if [[ -L "$dest" ]] && [[ "$(readlink -f "$dest")" == "$(readlink -f "$src")" ]]; then
+    echo "$label is up to date." >&2
+    return
+  fi
+  echo "" >&2
+  echo "=== $label ===" >&2
+  diff --color -u --label "existing: $dest" --label "repo: $src" "$dest" "$src" >&2 || true
+  echo "" >&2
+  prompt_replace "$src" "$dest" "$label" "rm \"$dest\""
+}
+
+# Symlink a directory with interactive diff on conflict
+link_dir() {
+  local src="$1" dest="$2" label="$3"
+  if [[ ! -e "$dest" && ! -L "$dest" ]]; then
+    mkdir -p "$(dirname "$dest")"
+    ln -s "$src" "$dest"
+    echo "Installed $label." >&2
+    return
+  fi
+  if [[ -L "$dest" ]] && [[ "$(readlink -f "$dest")" == "$(readlink -f "$src")" ]]; then
+    echo "$label is up to date." >&2
+    return
+  fi
+  echo "" >&2
+  echo "=== $label ===" >&2
+  diff --color -rq "$dest" "$src" >&2 || true
+  echo "" >&2
+  prompt_replace "$src" "$dest" "$label" "rm -r \"$dest\""
 }
 
 # Neovim
@@ -98,13 +145,7 @@ zsh)
     echo "Created ~/.zprofile with zprofile source" >&2
   fi
 
-  mkdir -p ~/.config
-  if [[ -e ~/.config/zsh ]]; then
-    echo "$HOME/.config/zsh exists. Skipping install." >&2
-  else
-    ln -s "$root_path/config/zsh" "$HOME/.config/zsh"
-    echo "Installed zsh config directory." >&2
-  fi
+  link_dir "$root_path/config/zsh" "$HOME/.config/zsh" "zsh config directory"
   ;;
 
 bash)
@@ -136,13 +177,7 @@ bash)
     echo "Created ~/.bash_profile with bash_profile source" >&2
   fi
 
-  mkdir -p ~/.config
-  if [[ -e ~/.config/bash ]]; then
-    echo "$HOME/.config/bash exists. Skipping install." >&2
-  else
-    ln -s "$root_path/config/bash" "$HOME/.config/bash"
-    echo "Installed bash config directory." >&2
-  fi
+  link_dir "$root_path/config/bash" "$HOME/.config/bash" "bash config directory"
   ;;
 
 *)
