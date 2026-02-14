@@ -73,7 +73,7 @@ link_dir() {
   fi
   echo "" >&2
   echo "=== $label ===" >&2
-  prompt_replace "$src" "$dest" "$label" "rm -r \"$dest\"" "diff --color -ru --label 'existing: $dest' --label 'repo: $src' '$dest' '$src'"
+  prompt_replace "$src" "$dest" "$label" "rm -r \"$dest\"" "diff --color -ru '$dest' '$src'"
 }
 
 # Neovim
