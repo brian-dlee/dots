@@ -16,13 +16,17 @@ This will install all configuration files and custom tools. Restart your shell o
 
 - **alacritty** - Terminal emulator configuration
 - **bash** - Bash shell configuration with aliases
-- **dircolors** - Custom color scheme for `ls` command  
+- **dircolors** - Custom color scheme for `ls` command
 - **ghostty** - Ghostty terminal configuration
+- **hypr** - Hyprland window manager configuration (individual configs sourced by omarchy)
+- **kitty** - Kitty terminal configuration
 - **nvim** - Neovim editor configuration (LazyVim-based)
-- **p10k** - Powerlevel10k theme configuration
+- **omarchy** - Omarchy desktop customizations (hooks, extensions, branding)
 - **readline** - Input configuration for bash/readline
+- **starship** - Starship cross-shell prompt configuration
 - **tmux** - Terminal multiplexer configuration
-- **zsh** - Zsh shell configuration with aliases
+- **walker** - Application launcher configuration
+- **waybar** - Status bar configuration
 
 ### Custom Tools (`tools/`)
 
@@ -35,7 +39,7 @@ If you prefer manual installation or want to install specific components:
 
 ### Configuration Files Only
 ```bash
-./install_all_config.sh
+./install_config.sh
 ```
 
 ### Custom Tools Only
@@ -48,11 +52,19 @@ If you prefer manual installation or want to install specific components:
 ## Configuration Details
 
 ### Shell Configuration
-- Both bash and zsh configurations include:
+- Bash configuration includes:
   - Color support with dircolors
   - Common aliases for ls, grep, etc.
   - History settings and completion
-  - Custom prompt configuration
+  - Starship prompt
+  - Clipboard helpers (cross-platform)
+  - eza integration (modern ls replacement)
+
+### Desktop Environment (Hyprland/Omarchy)
+- Individual Hyprland config files symlinked (omarchy manages the directory)
+- System-agnostic monitor config using `desc:` identifiers
+- Waybar, Walker, and terminal configs with omarchy theme integration
+- Run `hyprctl monitors` to find monitor descriptions for new displays
 
 ### Color Support
 - Linux-compatible LS_COLORS via dircolors
@@ -65,6 +77,10 @@ If you prefer manual installation or want to install specific components:
 - Shell EDITOR variable set to nvim
 
 ## Recommended extras
+
+### starship - https://starship.rs/
+
+Fast, cross-shell prompt with minimal configuration. Install via your package manager or `curl -sS https://starship.rs/install.sh | sh`.
 
 ### asdf - https://asdf-vm.com/
 
@@ -90,25 +106,24 @@ _Note: If you won't be using neovim you better remove or override the `export ED
 
 ### lazygit - https://github.com/jesseduffield/lazygit
 
-No single tool has made git tasks faster than `lazygit`. This thing is amazing. With 5 keystrokes, I can 
+No single tool has made git tasks faster than `lazygit`. This thing is amazing. With 5 keystrokes, I can
 commit a branch and open a PR against a custom target branch. That's not including my commit message
 or typing of my branch name of course. Let's not get carried away.
 
 ## Fonts
 
-You'll see that a Nerd Font is recommended for configurations like this. I use Powerlevel10k which recommends a very specific font patched just for this zsh theme. It's called "Menlo LGS NF". You can install it by downloading the files from the Powerlevel 10k Github page or by downloading the Homebrew tap `font-meslo-for-powerlevel10k`.
+A Nerd Font is recommended for terminal configurations. The configs use JetBrainsMono Nerd Font by default, which provides all the glyphs needed for starship, neovim, and the desktop environment.
 
-[Powerlevel10k Fonts](https://github.com/romkatv/powerlevel10k?tab=readme-ov-file#meslo-nerd-font-patched-for-powerlevel10k)
 [Nerd Fonts](https://www.nerdfonts.com/)
 
 _Note: Nerd Fonts can be downloaded and installed from the website and via Homebrew as they all have individual taps_
-
 
 ## Requirements
 
 - **Git** - For cloning the repository
 - **Go** (optional) - Required only for compiling custom tools
-- **Bash or Zsh** - Supported shells
+- **Bash** - Shell configuration
+- **Starship** - Cross-shell prompt
 - **Nerd Font** - For proper display of special characters (see Fonts section)
 
 ## Installation Notes
@@ -116,4 +131,4 @@ _Note: Nerd Fonts can be downloaded and installed from the website and via Homeb
 - Configuration files are symlinked, not copied, so changes sync with the repository
 - Custom tools install to `~/.local/bin` by default
 - Shell configurations are sourced from existing config files when possible
-- The installer checks for existing files and won't overwrite them
+- The installer shows diffs and prompts before replacing existing configs

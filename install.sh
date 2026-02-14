@@ -113,13 +113,12 @@ echo "Installation complete!" >&2
 echo "" >&2
 echo "Next steps:" >&2
 echo "1. Restart your shell or source your shell config:" >&2
-echo "   source ~/.bashrc  # for bash" >&2
-echo "   source ~/.zshrc   # for zsh" >&2
+echo "   source ~/.bashrc" >&2
 echo "2. Install recommended tools (see README.md):" >&2
+echo "   - starship (prompt)" >&2
 echo "   - asdf (version manager)" >&2
 echo "   - direnv (directory environment)" >&2
 echo "   - neovim (editor)" >&2
 echo "   - lazygit (git interface)" >&2
-echo "3. Install Nerd Fonts for proper terminal display" >&2
 echo "" >&2
 
