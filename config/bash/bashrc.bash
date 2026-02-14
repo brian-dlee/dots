@@ -65,6 +65,9 @@ command -v direnv >/dev/null 2>&1 && eval "$(direnv hook bash)"
 # google cloud sdk
 [[ -d "$HOME/.local/share/google-cloud-sdk" ]] && source "$HOME/.local/share/google-cloud-sdk/path.bash.inc"
 
+# pulumi
+[[ -d "$HOME/.pulumi" ]] && export PATH="$HOME/.pulumi/bin:$PATH"
+
 # when using tmux reverse search is not working
 # I'm not sure why I need this, but it corrects the issue
 bind '"\C-r": reverse-search-history'
