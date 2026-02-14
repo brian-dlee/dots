@@ -87,6 +87,22 @@ link_file "$root_path/config/readline/inputrc" "$HOME/.inputrc" "readline config
 # Dircolors
 link_file "$root_path/config/dircolors/dircolors" "$HOME/.dircolors" "dircolors configuration"
 
+# Git configuration (include-based so local identity config coexists)
+git_include="[include]\n\tpath = $root_path/config/git/config"
+mkdir -p "$HOME/.config/git"
+if [[ -f "$HOME/.config/git/config" ]]; then
+  if ! grep -Fq "$root_path/config/git/config" "$HOME/.config/git/config"; then
+    printf '%b\n' "$git_include" >> "$HOME/.config/git/config"
+    echo "Added git config include to existing ~/.config/git/config" >&2
+  else
+    echo "git config include already exists." >&2
+  fi
+else
+  printf '%b\n' "$git_include" > "$HOME/.config/git/config"
+  echo "Created ~/.config/git/config with include." >&2
+fi
+link_file "$root_path/config/git/ignore" "$HOME/.config/git/ignore" "git global ignore"
+
 # Ghostty terminal
 link_dir "$root_path/config/ghostty" "$HOME/.config/ghostty" "ghostty configuration"
 

@@ -16,6 +16,7 @@ This will install all configuration files and custom tools. Restart your shell o
 
 - **bash** - Bash shell configuration with aliases
 - **dircolors** - Custom color scheme for `ls` command
+- **git** - Shared git config (aliases, diff, pull/push, rerere) and global gitignore
 - **ghostty** - Ghostty terminal configuration
 - **hypr** - Hyprland window manager configuration (individual configs sourced by omarchy)
 - **nvim** - Neovim editor configuration (LazyVim-based)
