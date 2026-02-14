@@ -1,0 +1,14 @@
+7zip
+eza
+fd
+ffmpeg
+fzf
+imagemagick
+jq
+just
+poppler
+resvg
+ripgrep
+starship
+yazi
+zoxide
