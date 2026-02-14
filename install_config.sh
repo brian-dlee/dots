@@ -5,13 +5,18 @@ set -ue
 root_path=$(cd "$(dirname "$0")" && pwd)
 
 # Prompt for replacing an existing config
-# Usage: prompt_replace src dest label remove_cmd
+# Usage: prompt_replace src dest label remove_cmd diff_cmd
 # Returns 0 if replaced, 1 if skipped
 prompt_replace() {
-  local src="$1" dest="$2" label="$3" remove_cmd="$4"
+  local src="$1" dest="$2" label="$3" remove_cmd="$4" diff_cmd="$5"
   while true; do
-    read -r -p "Replace with repo version? [y]es (backup) / [Y]es (no backup) / [n]o: " choice </dev/tty
+    read -r -p "Replace with repo version? [d]iff / [y]es (backup) / [Y]es (no backup) / [n]o: " choice </dev/tty
     case "$choice" in
+      d)
+        echo "" >&2
+        eval "$diff_cmd" >&2 || true
+        echo "" >&2
+        ;;
       y)
         mv "$dest" "${dest}.bak"
         ln -s "$src" "$dest"
@@ -29,7 +34,7 @@ prompt_replace() {
         return 1
         ;;
       *)
-        echo "Please enter y, Y, or n." >&2
+        echo "Please enter d, y, Y, or n." >&2
         ;;
     esac
   done
@@ -50,9 +55,7 @@ link_file() {
   fi
   echo "" >&2
   echo "=== $label ===" >&2
-  diff --color -u --label "existing: $dest" --label "repo: $src" "$dest" "$src" >&2 || true
-  echo "" >&2
-  prompt_replace "$src" "$dest" "$label" "rm \"$dest\""
+  prompt_replace "$src" "$dest" "$label" "rm \"$dest\"" "diff --color -u --label 'existing: $dest' --label 'repo: $src' '$dest' '$src'"
 }
 
 # Symlink a directory with interactive diff on conflict
@@ -70,9 +73,7 @@ link_dir() {
   fi
   echo "" >&2
   echo "=== $label ===" >&2
-  diff --color -ru --label "existing: $dest" --label "repo: $src" "$dest" "$src" >&2 || true
-  echo "" >&2
-  prompt_replace "$src" "$dest" "$label" "rm -r \"$dest\""
+  prompt_replace "$src" "$dest" "$label" "rm -r \"$dest\"" "diff --color -ru --label 'existing: $dest' --label 'repo: $src' '$dest' '$src'"
 }
 
 # Neovim
