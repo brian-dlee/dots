@@ -70,7 +70,7 @@ link_dir() {
   fi
   echo "" >&2
   echo "=== $label ===" >&2
-  diff --color -rq "$dest" "$src" >&2 || true
+  diff --color -ru --label "existing: $dest" --label "repo: $src" "$dest" "$src" >&2 || true
   echo "" >&2
   prompt_replace "$src" "$dest" "$label" "rm -r \"$dest\""
 }
