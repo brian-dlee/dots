@@ -111,7 +111,7 @@ or typing of my branch name of course. Let's not get carried away.
 
 ## Fonts
 
-A Nerd Font is recommended for terminal configurations. The configs use JetBrainsMono Nerd Font by default, which provides all the glyphs needed for starship, neovim, and the desktop environment.
+A Nerd Font is recommended for terminal configurations. The configs use CaskaydiaMono Nerd Font by default, which provides all the glyphs needed for starship, neovim, and the desktop environment.
 
 [Nerd Fonts](https://www.nerdfonts.com/)
 
