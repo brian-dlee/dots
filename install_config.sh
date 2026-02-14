@@ -87,10 +87,8 @@ link_file "$root_path/config/readline/inputrc" "$HOME/.inputrc" "readline config
 # Dircolors
 link_file "$root_path/config/dircolors/dircolors" "$HOME/.dircolors" "dircolors configuration"
 
-# Terminal emulators
-link_dir "$root_path/config/alacritty" "$HOME/.config/alacritty" "alacritty configuration"
+# Ghostty terminal
 link_dir "$root_path/config/ghostty" "$HOME/.config/ghostty" "ghostty configuration"
-link_dir "$root_path/config/kitty" "$HOME/.config/kitty" "kitty configuration"
 
 # Hyprland (individual file symlinks — omarchy manages the directory)
 for conf in bindings input monitors envs looknfeel autostart hypridle hyprlock hyprsunset xdph; do

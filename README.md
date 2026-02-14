@@ -14,12 +14,10 @@ This will install all configuration files and custom tools. Restart your shell o
 
 ### Configuration Files (`config/`)
 
-- **alacritty** - Terminal emulator configuration
 - **bash** - Bash shell configuration with aliases
 - **dircolors** - Custom color scheme for `ls` command
 - **ghostty** - Ghostty terminal configuration
 - **hypr** - Hyprland window manager configuration (individual configs sourced by omarchy)
-- **kitty** - Kitty terminal configuration
 - **nvim** - Neovim editor configuration (LazyVim-based)
 - **omarchy** - Omarchy desktop customizations (hooks, extensions, branding)
 - **readline** - Input configuration for bash/readline
