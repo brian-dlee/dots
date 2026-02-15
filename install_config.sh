@@ -112,7 +112,7 @@ for conf in bindings input monitors envs looknfeel autostart hypridle hyprlock h
   link_file "$root_path/config/hypr/$conf.conf" "$HOME/.config/hypr/$conf.conf" "hypr $conf configuration"
 done
 # Ensure envs-local.conf exists (sourced by envs.conf for machine-specific vars)
-touch "$HOME/.config/hypr/envs-local.conf"
+[[ -f "$HOME/.config/hypr/envs-local.conf" ]] || echo "# Machine-local env overrides" > "$HOME/.config/hypr/envs-local.conf"
 
 # Waybar
 link_dir "$root_path/config/waybar" "$HOME/.config/waybar" "waybar configuration"
