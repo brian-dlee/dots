@@ -67,6 +67,9 @@ command -v direnv >/dev/null 2>&1 && eval "$(direnv hook bash)"
 # pulumi
 [[ -d "$HOME/.pulumi" ]] && export PATH="$HOME/.pulumi/bin:$PATH"
 
+# opencode
+[[ -d "$HOME/.opencode" ]] && export PATH=/home/brianlee/.opencode/bin:$PATH
+
 # when using tmux reverse search is not working
 # I'm not sure why I need this, but it corrects the issue
 bind '"\C-r": reverse-search-history'
