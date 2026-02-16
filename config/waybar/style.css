@@ -19,14 +19,27 @@
 }
 
 #workspaces button {
-  all: initial;
-  padding: 0 6px;
+  padding: 1px 4px;
   margin: 0 1.5px;
   min-width: 9px;
+  border: none;
+  background: transparent;
+  border-radius: 4px;
+}
+
+#workspaces button * {
+  background: transparent;
 }
 
 #workspaces button.empty {
   opacity: 0.5;
+}
+
+#workspaces button.active {
+  background-color: rgba(255, 206, 173, 0.25);
+  color: #ffcead;
+  font-weight: 700;
+  border-bottom: 2px solid #ffcead;
 }
 
 #cpu,
