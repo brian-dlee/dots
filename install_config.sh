@@ -107,12 +107,10 @@ link_file "$root_path/config/git/ignore" "$HOME/.config/git/ignore" "git global 
 # Ghostty terminal
 link_dir "$root_path/config/ghostty" "$HOME/.config/ghostty" "ghostty configuration"
 
-# Hyprland (individual file symlinks — omarchy manages the directory)
-for conf in bindings input monitors envs looknfeel autostart hypridle hyprlock hyprsunset xdph; do
-  link_file "$root_path/config/hypr/$conf.conf" "$HOME/.config/hypr/$conf.conf" "hypr $conf configuration"
-done
-# Ensure envs-local.conf exists (sourced by envs.conf for machine-specific vars)
-[[ -f "$HOME/.config/hypr/envs-local.conf" ]] || echo "# Machine-local env overrides" > "$HOME/.config/hypr/envs-local.conf"
+# Hyprland
+link_dir "$root_path/config/hypr" "$HOME/.config/hypr" "hypr configuration"
+# Ensure envs.local.conf exists (sourced by envs.conf for machine-specific vars)
+[[ -f "$HOME/.config/hypr/envs.local.conf" ]] || echo "# Machine-local env overrides" > "$HOME/.config/hypr/envs.local.conf"
 
 # Waybar
 link_dir "$root_path/config/waybar" "$HOME/.config/waybar" "waybar configuration"
