@@ -1,14 +1,23 @@
-7zip
+# Core CLI tools
 eza
 fd
-ffmpeg
 fzf
-imagemagick
 jq
-just
+ripgrep
+zoxide
+
+# Media & conversion
+ffmpeg
+imagemagick
 poppler
 resvg
-ripgrep
+7zip
+
+# Development
+asdf
+direnv
+just
+
+# Shell & terminal
 starship
 yazi
-zoxide
