@@ -109,8 +109,43 @@ link_dir "$root_path/config/ghostty" "$HOME/.config/ghostty" "ghostty configurat
 
 # Hyprland
 link_dir "$root_path/config/hypr" "$HOME/.config/hypr" "hypr configuration"
-# Ensure envs.local.conf exists (sourced by envs.conf for machine-specific vars)
-[[ -f "$HOME/.config/hypr/envs.local.conf" ]] || echo "# Machine-local env overrides" > "$HOME/.config/hypr/envs.local.conf"
+
+# Ensure local.conf exists for hyprland
+local_conf="$HOME/.config/hypr/local.conf"
+if [[ ! -f "$local_conf" ]]; then
+  echo "# Local machine configuration" > "$local_conf"
+  echo "# This file is imported by hyprland.conf" >> "$local_conf"
+  echo "" >> "$local_conf"
+  echo "# === Environment Variables ===" >> "$local_conf"
+  echo "# example_var = value" >> "$local_conf"
+  echo "Created $local_conf." >&2
+fi
+
+# Ensure hypridle-features.conf exists with commented-out feature imports
+hypridle_dir="$HOME/.config/hypr/hypridle"
+hypridle_features="$hypridle_dir/hypridle-features.conf"
+mkdir -p "$hypridle_dir/features"
+if [[ ! -f "$hypridle_features" ]]; then
+  echo "# Hypridle feature toggles" > "$hypridle_features"
+  echo "# Uncomment to enable:" >> "$hypridle_features"
+  for feature in "$root_path/config/hypr/hypridle/features"/*.conf; do
+    if [[ -f "$feature" ]]; then
+      feature_name=$(basename "$feature")
+      echo "# source = ~/.config/hypr/hypridle/features/$feature_name" >> "$hypridle_features"
+    fi
+  done
+  echo "Created $hypridle_features with feature templates." >&2
+else
+  for feature in "$root_path/config/hypr/hypridle/features"/*.conf; do
+    if [[ -f "$feature" ]]; then
+      feature_name=$(basename "$feature")
+      if ! grep -qF "$feature_name" "$hypridle_features"; then
+        echo "# source = ~/.config/hypr/hypridle/features/$feature_name" >> "$hypridle_features"
+        echo "Added feature template: $feature_name" >&2
+      fi
+    fi
+  done
+fi
 
 # Waybar
 link_dir "$root_path/config/waybar" "$HOME/.config/waybar" "waybar configuration"
