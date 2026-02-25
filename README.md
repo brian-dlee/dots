@@ -109,6 +109,19 @@ No single tool has made git tasks faster than `lazygit`. This thing is amazing. 
 commit a branch and open a PR against a custom target branch. That's not including my commit message
 or typing of my branch name of course. Let's not get carried away.
 
+### tmux - https://github.com/tmux/tmux
+
+Terminal multiplexer used for managing multiple terminal sessions. The config uses tpm (tmux plugin manager) - see installation below.
+
+### tpm - https://github.com/tmux-plugins/tpm
+
+Tmux plugin manager. After installing tmux, clone the repo and source your tmux config:
+
+```bash
+git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+# Restart tmux or press prefix + I to install plugins
+```
+
 ## Fonts
 
 A Nerd Font is recommended for terminal configurations. The configs use CaskaydiaMono Nerd Font by default, which provides all the glyphs needed for starship, neovim, and the desktop environment.
@@ -124,6 +137,8 @@ _Note: Nerd Fonts can be downloaded and installed from the website and via Homeb
 - **Bash** - Shell configuration
 - **Starship** - Cross-shell prompt
 - **Nerd Font** - For proper display of special characters (see Fonts section)
+- **tmux** - Terminal multiplexer
+- **tpm** - [Tmux Plugin Manager](https://github.com/tmux-plugins/tpm)
 
 ## Installation Notes
 

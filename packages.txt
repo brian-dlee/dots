@@ -5,6 +5,7 @@ fzf
 jq
 ripgrep
 zoxide
+tmux
 
 # Media & conversion
 ffmpeg

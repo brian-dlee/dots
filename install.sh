@@ -58,6 +58,11 @@ else
   SKIP_TOOLS=false
 fi
 
+if ! command_exists "tmux"; then
+  echo "Warning: tmux is not installed. Configuration will be linked but tmux is required to use it." >&2
+  echo "Install tmux via your package manager (e.g., 'yay tmux' or 'sudo pacman -S tmux')." >&2
+fi
+
 # Install configuration files
 echo "" >&2
 echo "Installing configuration files..." >&2
@@ -120,5 +125,8 @@ echo "   - asdf (version manager)" >&2
 echo "   - direnv (directory environment)" >&2
 echo "   - neovim (editor)" >&2
 echo "   - lazygit (git interface)" >&2
+echo "   - tmux (terminal multiplexer)" >&2
+echo "   - tpm (tmux plugin manager):" >&2
+echo "     git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm" >&2
 echo "" >&2
 

@@ -82,6 +82,13 @@ link_dir "$root_path/config/nvim" "$HOME/.config/nvim" "nvim configuration"
 # Tmux
 link_file "$root_path/config/tmux/tmux.conf" "$HOME/.tmux.conf" "tmux configuration"
 
+# Initialize tpm (tmux plugin manager) if not present
+tpm_dir="$HOME/.tmux/plugins/tpm"
+if [[ ! -d "$tpm_dir" ]]; then
+  echo "tpm not found. Cloning tmux plugin manager..." >&2
+  git clone https://github.com/tmux-plugins/tpm "$tpm_dir" 2>/dev/null || echo "Warning: Failed to clone tpm. Install manually: git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm" >&2
+fi
+
 # Readline
 link_file "$root_path/config/readline/inputrc" "$HOME/.inputrc" "readline configuration"
 
