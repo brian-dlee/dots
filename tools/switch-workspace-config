@@ -2,8 +2,8 @@
 # Usage: switch-workspace-config [home|office]
 
 LOCATION="$1"
-CONFIG_DIR="$HOME/.dots/config/hypr/core"
-WORKSPACES_FILE="$CONFIG_DIR/workspaces.conf"
+CONFIG_DIR="$HOME/.config/hypr/core"
+WORKSPACES_FILE="$CONFIG_DIR/workspaces.local.conf"
 
 if [ "$LOCATION" = "home" ]; then
     CONFIG_FILE="$CONFIG_DIR/workspaces-home.conf"

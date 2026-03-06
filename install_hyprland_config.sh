@@ -106,9 +106,52 @@ echo "live/hypr is clean." >&2
 # step 4: copy config/hypr → live/hypr
 # --------
 
-echo "Copying config/hypr into live/hypr (excluding shaders/)..." >&2
-rsync -a --exclude='shaders/' "$source_hypr/" "$live_hypr/"
+echo "Copying config/hypr into live/hypr (excluding *.local.* and shaders/)..." >&2
+rsync -a --exclude='*.local.*' --exclude='shaders/' "$source_hypr/" "$live_hypr/"
 echo "Copy complete." >&2
+
+# --------
+# step 4a: handle templated local files
+# --------
+
+get_version() {
+	local file="$1"
+	[[ -f "$file" ]] && grep -m1 '^# @dots-version:' "$file" | sed 's/.*: *//' || echo ""
+}
+
+handle_local_template() {
+	local rel_path="$1"
+	local source_file="$source_hypr/$rel_path"
+	local live_file="$live_hypr/$rel_path"
+
+	if [[ ! -f "$live_file" ]]; then
+		echo "  Creating $rel_path from template..." >&2
+		mkdir -p "$(dirname "$live_file")"
+		cp "$source_file" "$live_file"
+		return
+	fi
+
+	local source_ver=$(get_version "$source_file")
+	local live_ver=$(get_version "$live_file")
+
+	if [[ -n "$source_ver" && -n "$live_ver" && "$source_ver" != "$live_ver" ]]; then
+		echo "  Warning: $rel_path template is v$source_ver, live is v$live_ver - manual update needed" >&2
+	fi
+}
+
+echo "Handling templated local files..." >&2
+handle_local_template "core/machine.local.conf"
+handle_local_template "hypridle/hypridle-features.local.conf"
+
+# --------
+# step 4b: handle generated local files
+# --------
+
+echo "Handling generated local files..." >&2
+if [[ ! -f "$live_hypr/core/workspaces.local.conf" ]]; then
+	echo "  Generating workspaces.local.conf from home preset..." >&2
+	"$root_path/tools/switch-workspace-config" home >/dev/null 2>&1 || true
+fi
 
 # --------
 # step 5: reload hyprland
