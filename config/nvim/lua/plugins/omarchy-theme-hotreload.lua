@@ -7,6 +7,11 @@ return {
 		config = function()
 			local transparency_file = vim.fn.stdpath("config") .. "/plugin/after/transparency.lua"
 
+			-- Apply transparency on startup
+			if vim.fn.filereadable(transparency_file) == 1 then
+				vim.cmd.source(transparency_file)
+			end
+
 			vim.api.nvim_create_autocmd("User", {
 				pattern = "LazyReload",
 				callback = function()
