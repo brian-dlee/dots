@@ -3,12 +3,19 @@
 ## Quick Install
 
 ```bash
-git clone <repository-url> ~/.dots
+git clone git@github.com:brian-dlee/dots.git ~/.dots
 cd ~/.dots
 ./install.sh
 ```
 
-This will install all configuration files and custom tools. Restart your shell or source your config when done.
+This installs all configuration files and custom tools. After it completes, install the
+Hyprland config separately (it requires interactive confirmation — see details below):
+
+```bash
+./install_hyprland_config.sh
+```
+
+Restart your shell or source your config when done.
 
 ## What's Included
 
@@ -18,7 +25,7 @@ This will install all configuration files and custom tools. Restart your shell o
 - **dircolors** - Custom color scheme for `ls` command
 - **git** - Shared git config (aliases, diff, pull/push, rerere) and global gitignore
 - **ghostty** - Ghostty terminal configuration
-- **hypr** - Hyprland window manager configuration (individual configs sourced by omarchy)
+- **hypr** - Hyprland window manager configuration — source of truth, installed via `install_hyprland_config.sh` (see [docs/hyprland-config.md](docs/hyprland-config.md))
 - **nvim** - Neovim editor configuration (LazyVim-based)
 - **omarchy** - Omarchy desktop customizations (hooks, extensions, branding)
 - **readline** - Input configuration for bash/readline
@@ -31,15 +38,23 @@ This will install all configuration files and custom tools. Restart your shell o
 
 - **prettypath** - Path formatter for tmux and shell prompts
 - **urlencode** - URL encoding utility for shell
+- **switch-workspace-config** - Switch between workspace layout configs (home/office)
+- **force-workspace-monitors** - Force workspace-to-monitor assignments
 
 ## Manual Installation
-
-If you prefer manual installation or want to install specific components:
 
 ### Configuration Files Only
 ```bash
 ./install_config.sh
 ```
+
+### Hyprland Config (interactive, with rollback)
+```bash
+./install_hyprland_config.sh
+```
+
+See [docs/hyprland-config.md](docs/hyprland-config.md) for details on how this works and
+important nuances around machine-local files, shaders, and omarchy upgrades.
 
 ### Custom Tools Only
 ```bash
@@ -60,10 +75,18 @@ If you prefer manual installation or want to install specific components:
   - eza integration (modern ls replacement)
 
 ### Desktop Environment (Hyprland/Omarchy)
-- Individual Hyprland config files symlinked (omarchy manages the directory)
+- `config/hypr/` is the source of truth tracked by this repo
+- `~/.config/hypr` is a symlink to `~/.dots/live/hypr`, an independent git repo (gitignored by `.dots`)
+- `install_hyprland_config.sh` copies `config/hypr/` into `live/hypr/` with a 10-second
+  rollback window before you confirm the change
+- This design lets omarchy migrations modify `live/hypr` freely without dirtying `.dots`;
+  after an omarchy upgrade you can `git diff` in `live/hypr` to review what changed, then
+  cherry-pick into `config/hypr/`
+- Shaders in `~/.config/hypr/shaders/` are managed by the Aether GUI app, not this repo;
+  they are gitignored in `live/hypr`
 - System-agnostic monitor config using `desc:` identifiers
-- Waybar, Walker, and terminal configs with omarchy theme integration
 - Run `hyprctl monitors` to find monitor descriptions for new displays
+- Waybar, Walker, and terminal configs are symlinked directly (no `live/` indirection)
 
 ### Color Support
 - Linux-compatible LS_COLORS via dircolors
@@ -142,7 +165,10 @@ _Note: Nerd Fonts can be downloaded and installed from the website and via Homeb
 
 ## Installation Notes
 
-- Configuration files are symlinked, not copied, so changes sync with the repository
+- Most configuration files are symlinked directly from `~/.dots/config/` to `~/.config/`
+- Hyprland config is different: `~/.config/hypr` → `~/.dots/live/hypr` (an independent git repo);
+  `config/hypr/` is copied into `live/hypr/` by `install_hyprland_config.sh`, not symlinked
 - Custom tools install to `~/.local/bin` by default
 - Shell configurations are sourced from existing config files when possible
-- The installer shows diffs and prompts before replacing existing configs
+- `install_config.sh` shows diffs and prompts before replacing existing configs
+- Files matching `*.local.*` are gitignored — use this pattern for machine-specific overrides
