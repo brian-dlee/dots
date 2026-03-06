@@ -145,10 +145,10 @@ When you delete a file from `config/hypr/`, you must manually remove it from `li
 on each machine. This compromise is accepted to keep the install script simple and safe.
 
 **Example:**
-1. You remove `config/hypr/core/some-feature.conf`
+1. You remove `config/hypr/some-feature.conf`
 2. Run `install_hyprland_config.sh` on another machine
-3. `live/hypr/core/some-feature.conf` still exists and may still be sourced
-4. Manual cleanup: `rm ~/.config/hypr/core/some-feature.conf` on each machine
+3. `live/hypr/some-feature.conf` still exists and may still be sourced
+4. Manual cleanup: `rm ~/.config/hypr/some-feature.conf` on each machine
 
 ## Machine-Local Files
 
@@ -160,8 +160,8 @@ each machine.
 
 | File | Purpose | Template Version |
 |------|---------|------------------|
-| `core/machine.local.conf` | Per-machine overrides, sourced last by `hyprland.conf` | `@dots-version: 1` |
-| `hypridle/hypridle-features.local.conf` | Enable/disable idle features (suspend, hibernate) per machine | `@dots-version: 1` |
+| `machine.local.conf` | Per-machine overrides, sourced last by `hyprland.conf` | `@dots-version: 1` |
+| `hypridle-features.local.conf` | Enable/disable idle features (suspend, hibernate) per machine | `@dots-version: 1` |
 
 Each template includes a `# @dots-version: N` header. When you make structural changes 
 to a template (e.g., add a new feature source), bump the version number. 
@@ -173,7 +173,7 @@ accordingly.
 
 | File | Purpose |
 |------|---------|
-| `core/workspaces.local.conf` | Generated from `workspaces-home.conf` or `workspaces-office.conf` by `switch-workspace-config` |
+| `workspaces.local.conf` | Generated from `workspaces-home.conf` or `workspaces-office.conf` by `switch-workspace-config` |
 
 `workspaces.local.conf` is fully regenerated each time you run `switch-workspace-config`. 
 No version tracking is needed — when presets change, just re-run the tool.
@@ -228,9 +228,10 @@ On a machine where `.dots` is being installed for the first time:
 │   ├── hypridle.conf
 │   ├── hyprlock.conf
 │   ├── hyprsunset.conf
-│   ├── envs.local.conf              # gitignored (*.local.*)
-│   ├── machine.local.conf           # templated local file (@dots-version: 1)
-│   ├── hypridle-features.local.conf # templated local file (@dots-version: 1)
+│   ├── machine.local.conf                      # templated local file (@dots-version: 1)
+│   ├── hypridle-features.local.conf            # templated local file (@dots-version: 1)
+│   ├── hypridle-customization-suspend.conf     # custom hypridle feature
+│   ├── hypridle-customization-hibernate.conf   # custom hypridle feature
 │   ├── monitors.conf
 │   ├── bindings.conf
 │   ├── input.conf
@@ -238,11 +239,9 @@ On a machine where `.dots` is being installed for the first time:
 │   ├── autostart.conf
 │   ├── envs.conf
 │   ├── windowrules.conf
-│   ├── workspaces-home.conf         # preset for switch-workspace-config
-│   ├── workspaces-office.conf       # preset for switch-workspace-config
-│   ├── xdph.conf
-│   ├── suspend.conf
-│   └── hibernate.conf
+│   ├── workspaces-home.conf                    # preset for switch-workspace-config
+│   ├── workspaces-office.conf                  # preset for switch-workspace-config
+│   └── xdph.conf
 ├── live/                  # gitignored by .dots
 │   └── hypr/              # independent git repo
 │       ├── .git/
