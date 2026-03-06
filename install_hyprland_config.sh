@@ -140,15 +140,15 @@ handle_local_template() {
 }
 
 echo "Handling templated local files..." >&2
-handle_local_template "core/machine.local.conf"
-handle_local_template "hypridle/hypridle-features.local.conf"
+handle_local_template "machine.local.conf"
+handle_local_template "hypridle-features.local.conf"
 
 # --------
 # step 4b: handle generated local files
 # --------
 
 echo "Handling generated local files..." >&2
-if [[ ! -f "$live_hypr/core/workspaces.local.conf" ]]; then
+if [[ ! -f "$live_hypr/workspaces.local.conf" ]]; then
 	echo "  Generating workspaces.local.conf from home preset..." >&2
 	"$root_path/tools/switch-workspace-config" home >/dev/null 2>&1 || true
 fi
