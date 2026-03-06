@@ -106,8 +106,8 @@ echo "live/hypr is clean." >&2
 # step 4: copy config/hypr → live/hypr
 # --------
 
-echo "Copying config/hypr into live/hypr..." >&2
-cp -r "$source_hypr/." "$live_hypr/"
+echo "Copying config/hypr into live/hypr (excluding shaders/)..." >&2
+rsync -a --exclude='shaders/' "$source_hypr/" "$live_hypr/"
 echo "Copy complete." >&2
 
 # --------
