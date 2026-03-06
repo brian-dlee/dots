@@ -82,10 +82,10 @@ link_dir "$root_path/config/nvim" "$HOME/.config/nvim" "nvim configuration"
 # Tmux
 link_file "$root_path/config/tmux/tmux.conf" "$HOME/.config/tmux/tmux.conf" "tmux configuration"
 
-# Remove legacy ~/.tmux.conf symlink if it points to .dots (superseded by XDG location)
-if [[ -L "$HOME/.tmux.conf" ]] && [[ "$(readlink -f "$HOME/.tmux.conf")" == "$(readlink -f "$root_path/config/tmux/tmux.conf")" ]]; then
+# Remove legacy ~/.tmux.conf if present (superseded by XDG ~/.config/tmux/tmux.conf)
+if [[ -e "$HOME/.tmux.conf" || -L "$HOME/.tmux.conf" ]]; then
 	rm "$HOME/.tmux.conf"
-	echo "Removed legacy ~/.tmux.conf symlink (superseded by ~/.config/tmux/tmux.conf)." >&2
+	echo "Removed legacy ~/.tmux.conf (superseded by ~/.config/tmux/tmux.conf)." >&2
 fi
 
 # Initialize tpm (tmux plugin manager) if not present
