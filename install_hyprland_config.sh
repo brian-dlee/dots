@@ -140,13 +140,14 @@ echo "" >&2
 
 if [[ "$confirmed" == true ]]; then
 	hash=$(dots_short_hash)
-	echo "Config kept. Review changes:" >&2
+	echo "Config kept. Review changes and commit when ready:" >&2
 	echo "" >&2
 	git -C "$live_hypr" status --short >&2
 	echo "" >&2
-	echo "install from .dots @ $hash" >"$live_hypr/.git/MERGE_MSG"
-	git -C "$live_hypr" add .
-	git -C "$live_hypr" commit
+	echo "  cd $live_hypr" >&2
+	echo "  git diff" >&2
+	echo "  git add . && git commit -m \"install from .dots @ $hash\"" >&2
+	echo "" >&2
 else
 	echo "No confirmation. Reverting..." >&2
 	git -C "$live_hypr" checkout . >/dev/null
