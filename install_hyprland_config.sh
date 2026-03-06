@@ -144,8 +144,9 @@ if [[ "$confirmed" == true ]]; then
 	echo "" >&2
 	git -C "$live_hypr" status --short >&2
 	echo "" >&2
+	echo "install from .dots @ $hash" >"$live_hypr/.git/MERGE_MSG"
 	git -C "$live_hypr" add .
-	git -C "$live_hypr" commit -e -m "install from .dots @ $hash"
+	git -C "$live_hypr" commit
 else
 	echo "No confirmation. Reverting..." >&2
 	git -C "$live_hypr" checkout . >/dev/null
