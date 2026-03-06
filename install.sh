@@ -125,4 +125,6 @@ echo "   - lazygit (git interface)" >&2
 echo "   - tmux (terminal multiplexer)" >&2
 echo "   - tpm (tmux plugin manager):" >&2
 echo "     git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm" >&2
+echo "3. Install Hyprland config with safe rollback:" >&2
+echo "   ./install_hyprland_config.sh" >&2
 echo "" >&2

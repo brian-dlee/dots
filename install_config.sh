@@ -120,45 +120,7 @@ link_file "$root_path/config/git/ignore" "$HOME/.config/git/ignore" "git global 
 # Ghostty terminal
 link_dir "$root_path/config/ghostty" "$HOME/.config/ghostty" "ghostty configuration"
 
-# Hyprland
-link_dir "$root_path/config/hypr" "$HOME/.config/hypr" "hypr configuration"
-
-# Ensure local.conf exists for hyprland
-local_conf="$HOME/.config/hypr/core/local.conf"
-if [[ ! -f "$local_conf" ]]; then
-	echo "# Local machine configuration" >"$local_conf"
-	echo "# This file is imported by hyprland.conf" >>"$local_conf"
-	echo "" >>"$local_conf"
-	echo "# === Environment Variables ===" >>"$local_conf"
-	echo "# example_var = value" >>"$local_conf"
-	echo "Created $local_conf." >&2
-fi
-
-# Ensure hypridle-features.conf exists with commented-out feature imports
-hypridle_dir="$HOME/.config/hypr/hypridle"
-hypridle_features="$hypridle_dir/hypridle-features.conf"
-mkdir -p "$hypridle_dir/features"
-if [[ ! -f "$hypridle_features" ]]; then
-	echo "# Hypridle feature toggles" >"$hypridle_features"
-	echo "# Uncomment to enable:" >>"$hypridle_features"
-	for feature in "$root_path/config/hypr/hypridle/features"/*.conf; do
-		if [[ -f "$feature" ]]; then
-			feature_name=$(basename "$feature")
-			echo "# source = ~/.config/hypr/hypridle/features/$feature_name" >>"$hypridle_features"
-		fi
-	done
-	echo "Created $hypridle_features with feature templates." >&2
-else
-	for feature in "$root_path/config/hypr/hypridle/features"/*.conf; do
-		if [[ -f "$feature" ]]; then
-			feature_name=$(basename "$feature")
-			if ! grep -qF "$feature_name" "$hypridle_features"; then
-				echo "# source = ~/.config/hypr/hypridle/features/$feature_name" >>"$hypridle_features"
-				echo "Added feature template: $feature_name" >&2
-			fi
-		fi
-	done
-fi
+# Hyprland - managed separately by install_hyprland_config.sh
 
 # Waybar
 link_dir "$root_path/config/waybar" "$HOME/.config/waybar" "waybar configuration"
