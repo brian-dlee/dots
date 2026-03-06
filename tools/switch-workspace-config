@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+# Usage: switch-workspace-config [home|office]
+
+LOCATION="$1"
+CONFIG_DIR="$HOME/.dots/config/hypr/core"
+WORKSPACES_FILE="$CONFIG_DIR/workspaces.conf"
+
+if [ "$LOCATION" = "home" ]; then
+    CONFIG_FILE="$CONFIG_DIR/workspaces-home.conf"
+elif [ "$LOCATION" = "office" ]; then
+    CONFIG_FILE="$CONFIG_DIR/workspaces-office.conf"
+else
+    echo "Usage: $0 [home|office]"
+    exit 1
+fi
+
+{
+    echo "# Workspace to monitor assignments"
+    echo "# Switched to: $LOCATION"
+    echo ""
+    cat "$CONFIG_FILE"
+} > "$WORKSPACES_FILE"
+
+hyprctl reload
+echo "Switched to $LOCATION workspace config"
