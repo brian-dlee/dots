@@ -109,22 +109,17 @@ func gitBranchStatus(repoPath, branch string, verbose bool) BranchResult {
 }
 
 // checkRepo collects working copy status and branch ahead-counts for a repo.
+// Only branches with unpushed commits are included in the result.
 func checkRepo(repoPath string, branches []string, verbose bool) RepoStatus {
 	status := RepoStatus{Path: contractHome(repoPath)}
 	status.Working, _ = gitStatus(repoPath)
 	for _, branch := range branches {
 		result := gitBranchStatus(repoPath, branch, verbose)
-		// Only include branches that exist locally.
-		if result.Name != "" && (result.Ahead > 0 || branchExists(repoPath, branch)) {
+		if result.Ahead > 0 {
 			status.Branches = append(status.Branches, result)
 		}
 	}
 	return status
-}
-
-// branchExists returns true if the branch exists locally in the given repo.
-func branchExists(repoPath, branch string) bool {
-	return exec.Command("git", "-C", repoPath, "rev-parse", "--verify", "--quiet", "refs/heads/"+branch).Run() == nil
 }
 
 // findRepos walks scanPath and returns paths of all directories containing

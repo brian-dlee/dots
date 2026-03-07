@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"sort"
 	"strings"
 )
 
@@ -26,7 +27,36 @@ Usage:
 Config: ~/.config/dots/tools/check-unsaved/config.toml
 `
 
+// --- color ---
+
+type palette struct {
+	bold   string
+	dim    string
+	reset  string
+	red    string
+	yellow string
+	cyan   string
+}
+
+var clr palette
+
+func initColors() {
+	fi, err := os.Stdout.Stat()
+	if err == nil && fi.Mode()&os.ModeCharDevice != 0 {
+		clr = palette{
+			bold:   "\033[1m",
+			dim:    "\033[2m",
+			reset:  "\033[0m",
+			red:    "\033[31m",
+			yellow: "\033[33m",
+			cyan:   "\033[36m",
+		}
+	}
+}
+
 func main() {
+	initColors()
+
 	if len(os.Args) < 2 {
 		runChecks("", false)
 		return
@@ -51,7 +81,6 @@ func main() {
 			fmt.Fprintf(os.Stderr, "Unknown flag: %s\n\n%s", os.Args[1], usage)
 			os.Exit(1)
 		}
-		// Treat as a path: verbose check of a single repo.
 		runChecks(os.Args[1], true)
 	}
 }
@@ -59,8 +88,6 @@ func main() {
 // --- subcommand runners ---
 
 func runTrack(args []string) {
-	// Manual parsing so that flags and path may appear in any order.
-	// Supported: track <path> -b br, track -b br <path>, track --scan <path>
 	var scan bool
 	var branches []string
 	var pathArg string
@@ -141,6 +168,28 @@ func runList() {
 	cmdList(cfg)
 }
 
+// resolveBranches returns the local branches for repoAbsPath using the most
+// specific matching config entry:
+//   - An exact [[repo]] match always wins.
+//   - Otherwise, the [[scan]] entry with the longest matching path prefix wins.
+func resolveBranches(cfg *Config, repoAbsPath string) []string {
+	for _, r := range cfg.Repos {
+		if absPath(r.Path) == repoAbsPath {
+			return r.Branches
+		}
+	}
+	var best []string
+	bestLen := -1
+	for _, s := range cfg.Scans {
+		scanAbs := absPath(s.Path)
+		if strings.HasPrefix(repoAbsPath, scanAbs+string(os.PathSeparator)) && len(scanAbs) > bestLen {
+			bestLen = len(scanAbs)
+			best = s.Branches
+		}
+	}
+	return best
+}
+
 func runChecks(targetPath string, verbose bool) {
 	cfg, err := loadConfig()
 	if err != nil {
@@ -148,16 +197,10 @@ func runChecks(targetPath string, verbose bool) {
 		os.Exit(1)
 	}
 
-	// Single repo mode: check one path without requiring config.
+	// Single repo mode.
 	if targetPath != "" {
 		abs := absPath(targetPath)
-		branches := cfg.Branches
-		for _, r := range cfg.Repos {
-			if absPath(r.Path) == abs {
-				branches = mergeBranches(branches, r.Branches)
-				break
-			}
-		}
+		branches := mergeBranches(cfg.Branches, resolveBranches(cfg, abs))
 		status := checkRepo(abs, branches, true)
 		printVerbose(status)
 		if status.isDirty() {
@@ -171,18 +214,16 @@ func runChecks(targetPath string, verbose bool) {
 		os.Exit(1)
 	}
 
-	// Collect statuses, deduplicating by absolute path.
-	var statuses []RepoStatus
+	// Phase 1: Discover all unique repo absolute paths.
 	seen := make(map[string]bool)
+	var allPaths []string
 
 	for _, r := range cfg.Repos {
 		abs := absPath(r.Path)
-		if seen[abs] {
-			continue
+		if !seen[abs] {
+			seen[abs] = true
+			allPaths = append(allPaths, abs)
 		}
-		seen[abs] = true
-		branches := mergeBranches(cfg.Branches, r.Branches)
-		statuses = append(statuses, checkRepo(abs, branches, verbose))
 	}
 
 	for _, s := range cfg.Scans {
@@ -196,18 +237,50 @@ func runChecks(targetPath string, verbose bool) {
 			fmt.Fprintf(os.Stderr, "Warning: error scanning %s: %v\n", s.Path, err)
 			continue
 		}
-		branches := mergeBranches(cfg.Branches, s.Branches)
 		for _, repoPath := range repos {
-			if seen[repoPath] {
-				continue
+			if !seen[repoPath] {
+				seen[repoPath] = true
+				allPaths = append(allPaths, repoPath)
 			}
-			seen[repoPath] = true
-			statuses = append(statuses, checkRepo(repoPath, branches, verbose))
 		}
 	}
 
+	sort.Strings(allPaths)
+
+	// Phase 2: Resolve branches per repo.
+	type job struct {
+		path     string
+		branches []string
+	}
+	jobs := make([]job, len(allPaths))
+	for i, p := range allPaths {
+		jobs[i] = job{
+			path:     p,
+			branches: mergeBranches(cfg.Branches, resolveBranches(cfg, p)),
+		}
+	}
+
+	// Phase 3: Check repos in parallel (8 workers). Each job writes to its own
+	// buffered channel. The main goroutine reads channels in sorted order so
+	// output streams out as results become available, preserving alphabetic order.
+	const workers = 8
+	channels := make([]chan RepoStatus, len(jobs))
+	for i := range channels {
+		channels[i] = make(chan RepoStatus, 1)
+	}
+
+	sem := make(chan struct{}, workers)
+	for i, j := range jobs {
+		go func(ch chan RepoStatus, j job) {
+			sem <- struct{}{}
+			defer func() { <-sem }()
+			ch <- checkRepo(j.path, j.branches, verbose)
+		}(channels[i], j)
+	}
+
 	dirty := false
-	for _, s := range statuses {
+	for _, ch := range channels {
+		s := <-ch
 		if !s.isDirty() {
 			continue
 		}
@@ -224,34 +297,64 @@ func runChecks(targetPath string, verbose bool) {
 	}
 }
 
-// --- output formatters ---
+// --- output ---
+
+const minPathWidth = 40
 
 func printMinimal(s RepoStatus) {
 	var parts []string
 	if n := len(s.Working); n > 0 {
-		parts = append(parts, fmt.Sprintf("%d changed", n))
+		word := "changes"
+		if n == 1 {
+			word = "change"
+		}
+		parts = append(parts, clr.yellow+fmt.Sprintf("%d %s", n, word)+clr.reset)
 	}
 	for _, b := range s.Branches {
 		if b.Ahead > 0 {
-			parts = append(parts, fmt.Sprintf("%s↑%d", b.Name, b.Ahead))
+			parts = append(parts, clr.red+fmt.Sprintf("%s↑%d", b.Name, b.Ahead)+clr.reset)
 		}
 	}
-	fmt.Printf("%-40s  %s\n", s.Path, strings.Join(parts, "  "))
+
+	// Pad using visible length of path, not the colored string.
+	pad := minPathWidth - len(s.Path)
+	if pad < 2 {
+		pad = 2
+	}
+	fmt.Printf("%s%s%s%s%s\n",
+		clr.bold+clr.cyan, s.Path, clr.reset,
+		strings.Repeat(" ", pad),
+		strings.Join(parts, "  "),
+	)
 }
 
 func printVerbose(s RepoStatus) {
-	fmt.Println(s.Path)
-	if len(s.Working) > 0 {
-		fmt.Printf("  working copy: %d change(s)\n", len(s.Working))
+	fmt.Printf("%s%s%s\n", clr.bold+clr.cyan, s.Path, clr.reset)
+
+	if n := len(s.Working); n > 0 {
+		word := "changes"
+		if n == 1 {
+			word = "change"
+		}
+		fmt.Printf("  %sworking copy: %d %s%s\n", clr.yellow, n, word, clr.reset)
 		for _, l := range s.Working {
-			fmt.Printf("    %s %s\n", l.Code, l.File)
+			fmt.Printf("    %s%s%s %s\n", clr.dim, l.Code, clr.reset, l.File)
 		}
 	}
+
 	for _, b := range s.Branches {
 		if b.Ahead > 0 {
-			fmt.Printf("\n  %s: %d ahead\n", b.Name, b.Ahead)
+			fmt.Printf("\n  %s%s%s: %s%d ahead%s\n",
+				clr.bold, b.Name, clr.reset,
+				clr.red, b.Ahead, clr.reset,
+			)
 			for _, c := range b.Commits {
-				fmt.Printf("    %s\n", c)
+				// git --oneline format: "<hash> <message>"
+				if parts := strings.SplitN(c, " ", 2); len(parts) == 2 {
+					fmt.Printf("    %s%s%s %s\n", clr.dim, parts[0], clr.reset, parts[1])
+				} else {
+					fmt.Printf("    %s\n", c)
+				}
 			}
 		}
 	}
