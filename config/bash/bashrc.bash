@@ -12,16 +12,16 @@ shopt -s checkwinsize
 
 # Enable color support
 if [ -x /usr/bin/dircolors ]; then
-  test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+	test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
 fi
 
 # Enable programmable completion features
 if ! shopt -oq posix; then
-  if [ -f /usr/share/bash-completion/bash_completion ]; then
-    . /usr/share/bash-completion/bash_completion
-  elif [ -f /etc/bash_completion ]; then
-    . /etc/bash_completion
-  fi
+	if [ -f /usr/share/bash-completion/bash_completion ]; then
+		. /usr/share/bash-completion/bash_completion
+	elif [ -f /etc/bash_completion ]; then
+		. /etc/bash_completion
+	fi
 fi
 
 export EDITOR=nvim
@@ -31,17 +31,17 @@ export LSCOLORS=exfxcxdxbxegedabagacad
 
 # asdf
 if [[ -d "$HOME/.asdf" ]]; then
-  if [[ -f "$HOME/.asdf/asdf.sh" ]]; then
-    source "$HOME/.asdf/asdf.sh"
-    source "$HOME/.asdf/completions/asdf.bash"
-  else
-    export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
-    source <(asdf completion bash)
-  fi
+	if [[ -f "$HOME/.asdf/asdf.sh" ]]; then
+		source "$HOME/.asdf/asdf.sh"
+		source "$HOME/.asdf/completions/asdf.bash"
+	else
+		export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
+		source <(asdf completion bash)
+	fi
 
-  # asdf plugins
-  [[ -f "$HOME/.asdf/plugins/golang/set-env.bash" ]] && source "$HOME/.asdf/plugins/golang/set-env.bash"
-  [[ -f "$HOME/.asdf/plugins/java/set-java-home.bash" ]] && source "$HOME/.asdf/plugins/java/set-java-home.bash"
+	# asdf plugins
+	[[ -f "$HOME/.asdf/plugins/golang/set-env.bash" ]] && source "$HOME/.asdf/plugins/golang/set-env.bash"
+	[[ -f "$HOME/.asdf/plugins/java/set-java-home.bash" ]] && source "$HOME/.asdf/plugins/java/set-java-home.bash"
 fi
 
 # bash customizations
@@ -51,15 +51,18 @@ fi
 
 # homebrew
 if [[ "$(uname)" == "Darwin" ]]; then
-  if [[ -f /opt/homebrew/bin/brew ]]; then
-    eval "$(/opt/homebrew/bin/brew shellenv)"
-  elif [[ -f /usr/local/bin/brew ]]; then
-    eval "$(/usr/local/bin/brew shellenv)"
-  fi
+	if [[ -f /opt/homebrew/bin/brew ]]; then
+		eval "$(/opt/homebrew/bin/brew shellenv)"
+	elif [[ -f /usr/local/bin/brew ]]; then
+		eval "$(/usr/local/bin/brew shellenv)"
+	fi
 fi
 
 # direnv
 command -v direnv >/dev/null 2>&1 && eval "$(direnv hook bash)"
+
+# zoxide
+command -v zoxide >/dev/null 2>&1 && eval "$(zoxide init bash)"
 
 # google cloud sdk
 [[ -d "$HOME/.local/share/google-cloud-sdk" ]] && source "$HOME/.local/share/google-cloud-sdk/path.bash.inc"
@@ -73,6 +76,9 @@ command -v direnv >/dev/null 2>&1 && eval "$(direnv hook bash)"
 # when using tmux reverse search is not working
 # I'm not sure why I need this, but it corrects the issue
 bind '"\C-r": reverse-search-history'
+
+# tmux SSH env sync (must be before starship)
+[[ ! -f "$HOME/.config/bash/customizations/03-tmux-ssh-env.bash" ]] || source "$HOME/.config/bash/customizations/03-tmux-ssh-env.bash"
 
 # starship prompt
 command -v starship >/dev/null 2>&1 && eval "$(starship init bash)"

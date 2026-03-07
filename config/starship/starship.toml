@@ -1,6 +1,10 @@
 add_newline = true
 command_timeout = 200
-format = "[$directory$git_branch$git_status$cmd_duration]($style)$character"
+format = "[$hostname$directory$git_branch$git_status$cmd_duration]($style)$character"
+
+[hostname]
+ssh_only = true
+format = "[⌁ ](bold red)"
 
 [character]
 error_symbol = "[✗](bold cyan)"

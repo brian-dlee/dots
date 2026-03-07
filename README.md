@@ -36,10 +36,22 @@ Restart your shell or source your config when done.
 
 ### Custom Tools (`tools/`)
 
-- **prettypath** - Path formatter for tmux and shell prompts
-- **urlencode** - URL encoding utility for shell
-- **switch-workspace-config** - Switch between workspace layout configs (home/office)
-- **force-workspace-monitors** - Force workspace-to-monitor assignments
+Tools follow a naming convention that determines how they are installed:
+
+- `tools/*.sh` — shell scripts, installed as `~/.local/bin/<name>` (extension stripped)
+- `tools/*/main.go` — Go tools, compiled and installed as `~/.local/bin/<dirname>`
+
+| Tool | Type | Description |
+|------|------|-------------|
+| **prettypath** | Go | Path formatter for tmux and shell prompts |
+| **urlencode** | Go | URL encoding utility for shell |
+| **switch-workspace-config** | Shell | Switch between workspace layout configs (home/office) |
+| **force-workspace-monitors** | Shell | Force workspace-to-monitor assignments |
+| **check-unsaved** | Shell | Check git repos for uncommitted/unpushed changes |
+| **default-cloudsql-proxies** | Shell | Start Cloud SQL proxy connections for DBeaver (requires config) |
+| **ssh-context** | Shell | Manage SSH auth socket and signing identity (requires config) |
+
+Tools requiring a config file read from `~/.config/dots/tools/<tool-name>/`. Run the tool once without a config to see setup instructions.
 
 ## Manual Installation
 
@@ -58,9 +70,8 @@ important nuances around machine-local files, shaders, and omarchy upgrades.
 
 ### Custom Tools Only
 ```bash
-# Requires Go to be installed
-./tools/prettypath/install.sh
-./tools/urlencode/install.sh
+# Requires Go to be installed for Go tools
+./install_tools.sh
 ```
 
 ## Configuration Details
