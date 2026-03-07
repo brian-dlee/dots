@@ -47,7 +47,7 @@ Tools follow a naming convention that determines how they are installed:
 | **urlencode** | Go | URL encoding utility for shell |
 | **switch-workspace-config** | Shell | Switch between workspace layout configs (home/office) |
 | **force-workspace-monitors** | Shell | Force workspace-to-monitor assignments |
-| **check-unsaved** | Shell | Check git repos for uncommitted/unpushed changes |
+| **check-unsaved** | Go | Check git repos for uncommitted/unpushed changes |
 | **default-cloudsql-proxies** | Shell | Start Cloud SQL proxy connections for DBeaver (requires config) |
 | **ssh-context** | Shell | Manage SSH auth socket and signing identity (requires config) |
 

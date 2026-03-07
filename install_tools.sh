@@ -34,7 +34,8 @@ install_go() {
 	local dest="$bin_dir/$name"
 
 	echo "  Building $name..." >&2
-	go build -o "$dest" "$dir"
+	rm -f "$dest"
+	(cd "$dir" && go build -o "$dest" .)
 	echo "  Installed $name -> $dest" >&2
 }
 
