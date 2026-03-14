@@ -49,7 +49,7 @@ Tools follow a naming convention that determines how they are installed:
 | **force-workspace-monitors** | Shell | Force workspace-to-monitor assignments |
 | **check-unsaved** | Go | Check git repos for uncommitted/unpushed changes |
 | **default-cloudsql-proxies** | Shell | Start Cloud SQL proxy connections for DBeaver (requires config) |
-| **ssh-context** | Shell | Manage SSH auth socket and signing identity (requires config) |
+| **git-ssh-sign** | Shell | Wrapper for git ssh signing that unsets SSH_AUTH_SOCK |
 
 Tools requiring a config file read from `~/.config/dots/tools/<tool-name>/`. Run the tool once without a config to see setup instructions.
 
