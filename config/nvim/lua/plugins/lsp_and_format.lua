@@ -2,8 +2,54 @@ local function find_biome_root_dir(fname)
   return require("lspconfig.util").root_pattern("biome.json", "biome.jsonc")(fname)
 end
 
+local function find_bun_root_dir(fname)
+  return require("lspconfig.util").root_pattern("bun.lock")(fname)
+end
+
 local function find_deno_root_dir(fname)
   return require("lspconfig.util").root_pattern("deno.json", "deno.jsonc")(fname)
+end
+
+local function find_oxfmt_root_dir(fname)
+  return require("lspconfig.util").root_pattern(
+    "osfmt.config.ts",
+    "osfmt.config.mts",
+    "osfmt.config.cts",
+    "osfmt.config.js",
+    "osfmt.config.mjs",
+    "osfmt.config.cjs",
+    "osfmt.config.json",
+    "osfmt.config.jsonc",
+    ".oxfmtrc.ts",
+    ".oxfmtrc.mts",
+    ".oxfmtrc.cts",
+    ".oxfmtrc.js",
+    ".oxfmtrc.mjs",
+    ".oxfmtrc.cjs",
+    ".oxfmtrc.json",
+    ".oxfmtrc.jsonc"
+  )(fname)
+end
+
+local function find_oxlint_root_dir(fname)
+  return require("lspconfig.util").root_pattern(
+    "oslint.config.ts",
+    "oslint.config.mts",
+    "oslint.config.cts",
+    "oslint.config.js",
+    "oslint.config.mjs",
+    "oslint.config.cjs",
+    "oslint.config.json",
+    "oslint.config.jsonc",
+    ".oxlintrc.ts",
+    ".oxlintrc.mts",
+    ".oxlintrc.cts",
+    ".oxlintrc.js",
+    ".oxlintrc.mjs",
+    ".oxlintrc.cjs",
+    ".oxlintrc.json",
+    ".oxlintrc.jsonc"
+  )(fname)
 end
 
 local function find_typescript_root_dir(fname)
@@ -68,10 +114,28 @@ local function resolve_jsts_file_tools(fname)
     deno_root_dir_length = string.len(deno_root_dir)
   end
 
+  local bun_root_dir = find_bun_root_dir(fname)
+  local bun_root_dir_length = 0
+  if bun_root_dir and deno_root_dir ~= "" then
+    bun_root_dir_length = string.len(bun_root_dir)
+  end
+
   local biome_root_dir = find_biome_root_dir(fname)
   local biome_root_dir_length = 0
   if biome_root_dir and biome_root_dir ~= "" then
     biome_root_dir_length = string.len(biome_root_dir)
+  end
+
+  local oxfmt_root_dir = find_oxfmt_root_dir(fname)
+  local oxfmt_root_dir_length = 0
+  if oxfmt_root_dir and oxfmt_root_dir ~= "" then
+    oxfmt_root_dir_length = string.len(oxfmt_root_dir)
+  end
+
+  local oxlint_root_dir = find_oxlint_root_dir(fname)
+  local oxlint_root_dir_length = 0
+  if oxlint_root_dir and oxlint_root_dir ~= "" then
+    oxlint_root_dir_length = string.len(oxlint_root_dir)
   end
 
   local typescript_root_dir = find_typescript_root_dir(fname)
@@ -94,22 +158,38 @@ local function resolve_jsts_file_tools(fname)
 
   local tools = {}
 
-  if deno_root_dir_length > 0 and deno_root_dir_length >= typescript_root_dir_length then
+  local max_runtime_dir_length = math.max(deno_root_dir_length, bun_root_dir_length, typescript_root_dir_length)
+  local max_formatter_dir_length =
+    math.max(biome_root_dir_length, eslint_root_dir_length, oxfmt_root_dir_length, oxlint_root_dir_length)
+
+  if deno_root_dir_length > 0 and deno_root_dir_length == max_runtime_dir_length then
     return { deno = deno_root_dir }
   end
 
-  tools["tsc"] = typescript_root_dir
-
-  if biome_root_dir_length > 0 and biome_root_dir_length >= eslint_root_dir_length then
-    tools["biome"] = biome_root_dir
-  elseif eslint_root_dir_length > 0 then
-    tools["eslint"] = eslint_root_dir
-
-    if prettier_root_dir_length > 0 then
-      tools["prettier"] = prettier_root_dir
-    end
+  if bun_root_dir_length > 0 and bun_root_dir_length == max_runtime_dir_length then
+    tools["bun"] = bun_root_dir
   else
+    tools["tsc"] = typescript_root_dir
+  end
+
+  if biome_root_dir_length > 0 and biome_root_dir_length == max_formatter_dir_length then
     tools["biome"] = biome_root_dir
+  end
+
+  if oxfmt_root_dir_length > 0 and oxfmt_root_dir_length == max_formatter_dir_length then
+    tools["oxfmt"] = oxfmt_root_dir
+  end
+
+  if oxlint_root_dir_length > 0 and oxlint_root_dir_length == max_formatter_dir_length then
+    tools["oxlint"] = oxlint_root_dir
+  end
+
+  if eslint_root_dir_length > 0 and eslint_root_dir_length == max_formatter_dir_length then
+    tools["eslint"] = eslint_root_dir
+  end
+
+  if prettier_root_dir_length > 0 and prettier_root_dir_length == max_formatter_dir_length then
+    tools["prettier"] = prettier_root_dir
   end
 
   return tools
@@ -203,20 +283,29 @@ end
 
 local function jsts_formatters(bufnr)
   local tools = get_or_resolve_jsts_buffer_tools(bufnr)
+  local formatters = {}
 
   if tools["deno"] ~= nil then
-    return { "deno_fmt" }
+    table.insert(formatters, "deno_fmt")
+  end
+
+  if tools["oxfmt"] ~= nil then
+    table.insert(formatters, "oxfmt")
+  end
+
+  if tools["oxlint"] ~= nil then
+    table.insert(formatters, "oxlint")
   end
 
   if tools["biome"] ~= nil then
-    return { "biome-check" }
+    table.insert(formatters, "biome-check")
   end
 
   if tools["prettier"] ~= nil then
-    return { "prettier" }
+    table.insert(formatters, "prettier")
   end
 
-  return {}
+  return formatters
 end
 
 return {
@@ -332,6 +421,14 @@ return {
         docker_language_server = {},
         eslint = {
           root_dir = jsts_tool_root_dir("eslint"),
+          single_file_support = true,
+        },
+        oxfmt = {
+          root_dir = jsts_tool_root_dir("oxfmt"),
+          single_file_support = true,
+        },
+        oxlint = {
+          root_dir = jsts_tool_root_dir("oxlint"),
           single_file_support = true,
         },
         golangci_lint_ls = {},
