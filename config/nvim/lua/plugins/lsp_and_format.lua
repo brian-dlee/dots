@@ -473,7 +473,7 @@ return {
         toml = { "taplo" },
         typescript = jsts_formatters,
         typescriptreact = jsts_formatters,
-        yaml = { "yamlfmt" },
+        yaml = { "yamlfix" },
         ["_"] = { "trim_whitespace" },
       },
       formatters = {
