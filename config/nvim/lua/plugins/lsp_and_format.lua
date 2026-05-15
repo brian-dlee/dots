@@ -437,7 +437,6 @@ return {
         prismals = {},
         ruff = {},
         rust_analyzer = {},
-        taplo = {},
         templ = {},
         ty = {
           root_dir = python_tool_root_dir("ty"),
@@ -473,7 +472,6 @@ return {
         toml = { "taplo" },
         typescript = jsts_formatters,
         typescriptreact = jsts_formatters,
-        yaml = { "yamlfix" },
         ["_"] = { "trim_whitespace" },
       },
       formatters = {
