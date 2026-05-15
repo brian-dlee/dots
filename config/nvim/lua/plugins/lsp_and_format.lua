@@ -311,16 +311,6 @@ end
 return {
   {
     "mason-org/mason-lspconfig.nvim",
-    opts = {
-      ensure_installed = {
-        "docker_language_server",
-        "eslint",
-        "lua_ls",
-        "prismals",
-        "terraformls",
-        "yamlls",
-      },
-    },
     dependencies = {
       {
         "mason-org/mason.nvim",
