@@ -1,0 +1,41 @@
+[env]
+_.path = ["{{ cwd }}/node_modules/.bin", "{{ cwd }}/.venv/bin", "{{ cwd }}/bin"]
+MISE_GO_DEFAULT_PACKAGES_FILE = "{{env.HOME}}/.config/mise/default-go-packages"
+
+[tools]
+node = "latest"
+go = "latest"
+rust = "latest"
+python = "latest"
+bun = "latest"
+deno = "latest"
+java = "latest"
+zig = "latest"
+
+air = "latest"
+lefthook = "latest"
+shfmt = "latest"
+jq = "latest"
+"pipx:sqlfmt" = "latest"
+"pipx:yamlfix" = "latest"
+taplo = "latest"
+"pipx:mdformat" = "latest"
+
+# bash = { "shfmt" },
+# fish = {},
+# go = { "gofumpt" },
+# javascript = jsts_formatters,
+# javascriptreact = jsts_formatters,
+# json = { "jq" },
+# jsonc = { "jq" },
+# lua = { "stylua" },
+# markdown = { "mdformat" },
+# prisma = { "prisma_format" },
+# python = { "ruff_format" },
+# rust = { "rustfmt" },
+# sh = { "shfmt" },
+# sql = { "sqlfmt" },
+# toml = { "taplo" },
+# typescript = jsts_formatters,
+# typescriptreact = jsts_formatters,
+# yaml = { "yamlfix" },

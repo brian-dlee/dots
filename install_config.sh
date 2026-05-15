@@ -8,72 +8,72 @@ root_path=$(cd "$(dirname "$0")" && pwd)
 # Usage: prompt_replace src dest label remove_cmd diff_cmd
 # Returns 0 if replaced, 1 if skipped
 prompt_replace() {
-	local src="$1" dest="$2" label="$3" remove_cmd="$4" diff_cmd="$5"
-	while true; do
-		read -r -p "Replace with repo version? [d]iff / [y]es (backup) / [Y]es (no backup) / [n]o: " choice </dev/tty
-		case "$choice" in
-		d)
-			echo "" >&2
-			eval "$diff_cmd" >&2 || true
-			echo "" >&2
-			;;
-		y)
-			mv "$dest" "${dest}.bak"
-			ln -s "$src" "$dest"
-			echo "Applied $label. Backup: ${dest}.bak" >&2
-			return 0
-			;;
-		Y)
-			eval "$remove_cmd"
-			ln -s "$src" "$dest"
-			echo "Applied $label." >&2
-			return 0
-			;;
-		n)
-			echo "Skipped $label." >&2
-			return 1
-			;;
-		*)
-			echo "Please enter d, y, Y, or n." >&2
-			;;
-		esac
-	done
+  local src="$1" dest="$2" label="$3" remove_cmd="$4" diff_cmd="$5"
+  while true; do
+    read -r -p "Replace with repo version? [d]iff / [y]es (backup) / [Y]es (no backup) / [n]o: " choice </dev/tty
+    case "$choice" in
+    d)
+      echo "" >&2
+      eval "$diff_cmd" >&2 || true
+      echo "" >&2
+      ;;
+    y)
+      mv "$dest" "${dest}.bak"
+      ln -s "$src" "$dest"
+      echo "Applied $label. Backup: ${dest}.bak" >&2
+      return 0
+      ;;
+    Y)
+      eval "$remove_cmd"
+      ln -s "$src" "$dest"
+      echo "Applied $label." >&2
+      return 0
+      ;;
+    n)
+      echo "Skipped $label." >&2
+      return 1
+      ;;
+    *)
+      echo "Please enter d, y, Y, or n." >&2
+      ;;
+    esac
+  done
 }
 
 # Symlink a single file with interactive diff on conflict
 link_file() {
-	local src="$1" dest="$2" label="$3"
-	if [[ ! -e "$dest" && ! -L "$dest" ]]; then
-		mkdir -p "$(dirname "$dest")"
-		ln -s "$src" "$dest"
-		echo "Installed $label." >&2
-		return
-	fi
-	if [[ -L "$dest" ]] && [[ "$(readlink -f "$dest")" == "$(readlink -f "$src")" ]]; then
-		echo "$label is up to date." >&2
-		return
-	fi
-	echo "" >&2
-	echo "=== $label ===" >&2
-	prompt_replace "$src" "$dest" "$label" "rm \"$dest\"" "diff --color -u --label 'existing: $dest' --label 'repo: $src' '$dest' '$src'"
+  local src="$1" dest="$2" label="$3"
+  if [[ ! -e "$dest" && ! -L "$dest" ]]; then
+    mkdir -p "$(dirname "$dest")"
+    ln -s "$src" "$dest"
+    echo "Installed $label." >&2
+    return
+  fi
+  if [[ -L "$dest" ]] && [[ "$(readlink -f "$dest")" == "$(readlink -f "$src")" ]]; then
+    echo "$label is up to date." >&2
+    return
+  fi
+  echo "" >&2
+  echo "=== $label ===" >&2
+  prompt_replace "$src" "$dest" "$label" "rm \"$dest\"" "diff --color -u --label 'existing: $dest' --label 'repo: $src' '$dest' '$src'"
 }
 
 # Symlink a directory with interactive diff on conflict
 link_dir() {
-	local src="$1" dest="$2" label="$3"
-	if [[ ! -e "$dest" && ! -L "$dest" ]]; then
-		mkdir -p "$(dirname "$dest")"
-		ln -s "$src" "$dest"
-		echo "Installed $label." >&2
-		return
-	fi
-	if [[ -L "$dest" ]] && [[ "$(readlink -f "$dest")" == "$(readlink -f "$src")" ]]; then
-		echo "$label is up to date." >&2
-		return
-	fi
-	echo "" >&2
-	echo "=== $label ===" >&2
-	prompt_replace "$src" "$dest" "$label" "rm -r \"$dest\"" "diff --color -ru '$dest' '$src'"
+  local src="$1" dest="$2" label="$3"
+  if [[ ! -e "$dest" && ! -L "$dest" ]]; then
+    mkdir -p "$(dirname "$dest")"
+    ln -s "$src" "$dest"
+    echo "Installed $label." >&2
+    return
+  fi
+  if [[ -L "$dest" ]] && [[ "$(readlink -f "$dest")" == "$(readlink -f "$src")" ]]; then
+    echo "$label is up to date." >&2
+    return
+  fi
+  echo "" >&2
+  echo "=== $label ===" >&2
+  prompt_replace "$src" "$dest" "$label" "rm -r \"$dest\"" "diff --color -ru '$dest' '$src'"
 }
 
 # Neovim
@@ -84,15 +84,15 @@ link_file "$root_path/config/tmux/tmux.conf" "$HOME/.config/tmux/tmux.conf" "tmu
 
 # Remove legacy ~/.tmux.conf if present (superseded by XDG ~/.config/tmux/tmux.conf)
 if [[ -e "$HOME/.tmux.conf" || -L "$HOME/.tmux.conf" ]]; then
-	rm "$HOME/.tmux.conf"
-	echo "Removed legacy ~/.tmux.conf (superseded by ~/.config/tmux/tmux.conf)." >&2
+  rm "$HOME/.tmux.conf"
+  echo "Removed legacy ~/.tmux.conf (superseded by ~/.config/tmux/tmux.conf)." >&2
 fi
 
 # Initialize tpm (tmux plugin manager) if not present
 tpm_dir="$HOME/.tmux/plugins/tpm"
 if [[ ! -d "$tpm_dir" ]]; then
-	echo "tpm not found. Cloning tmux plugin manager..." >&2
-	git clone https://github.com/tmux-plugins/tpm "$tpm_dir" 2>/dev/null || echo "Warning: Failed to clone tpm. Install manually: git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm" >&2
+  echo "tpm not found. Cloning tmux plugin manager..." >&2
+  git clone https://github.com/tmux-plugins/tpm "$tpm_dir" 2>/dev/null || echo "Warning: Failed to clone tpm. Install manually: git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm" >&2
 fi
 
 # Readline
@@ -105,15 +105,15 @@ link_file "$root_path/config/dircolors/dircolors" "$HOME/.dircolors" "dircolors 
 git_include="[include]\n\tpath = $root_path/config/git/config"
 mkdir -p "$HOME/.config/git"
 if [[ -f "$HOME/.config/git/config" ]]; then
-	if ! grep -Fq "$root_path/config/git/config" "$HOME/.config/git/config"; then
-		printf '%b\n' "$git_include" >>"$HOME/.config/git/config"
-		echo "Added git config include to existing ~/.config/git/config" >&2
-	else
-		echo "git config include already exists." >&2
-	fi
+  if ! grep -Fq "$root_path/config/git/config" "$HOME/.config/git/config"; then
+    printf '%b\n' "$git_include" >>"$HOME/.config/git/config"
+    echo "Added git config include to existing ~/.config/git/config" >&2
+  else
+    echo "git config include already exists." >&2
+  fi
 else
-	printf '%b\n' "$git_include" >"$HOME/.config/git/config"
-	echo "Created ~/.config/git/config with include." >&2
+  printf '%b\n' "$git_include" >"$HOME/.config/git/config"
+  echo "Created ~/.config/git/config with include." >&2
 fi
 link_file "$root_path/config/git/ignore" "$HOME/.config/git/ignore" "git global ignore"
 
@@ -121,6 +121,9 @@ link_file "$root_path/config/git/ignore" "$HOME/.config/git/ignore" "git global 
 link_dir "$root_path/config/ghostty" "$HOME/.config/ghostty" "ghostty configuration"
 
 # Hyprland - managed separately by install_hyprland_config.sh
+
+# mise
+link_file "$root_path/config/mise" "$HOME/.config/mise" "mise configuration"
 
 # Waybar
 link_dir "$root_path/config/waybar" "$HOME/.config/waybar" "waybar configuration"
@@ -130,7 +133,7 @@ link_dir "$root_path/config/walker" "$HOME/.config/walker" "walker configuration
 
 # Omarchy customizations (subdirectory symlinks — omarchy manages the parent)
 for subdir in hooks extensions branding; do
-	link_dir "$root_path/config/omarchy/$subdir" "$HOME/.config/omarchy/$subdir" "omarchy $subdir"
+  link_dir "$root_path/config/omarchy/$subdir" "$HOME/.config/omarchy/$subdir" "omarchy $subdir"
 done
 
 # Starship prompt
@@ -141,28 +144,28 @@ echo "Installing bash configuration..." >&2
 
 bashrc_source="source \"$root_path/config/bash/bashrc.bash\""
 if [[ -f ~/.bashrc ]]; then
-	if ! grep -Fq "$bashrc_source" ~/.bashrc; then
-		echo "$bashrc_source" >>~/.bashrc
-		echo "Added bashrc source to existing ~/.bashrc" >&2
-	else
-		echo "bashrc source already exists in ~/.bashrc" >&2
-	fi
+  if ! grep -Fq "$bashrc_source" ~/.bashrc; then
+    echo "$bashrc_source" >>~/.bashrc
+    echo "Added bashrc source to existing ~/.bashrc" >&2
+  else
+    echo "bashrc source already exists in ~/.bashrc" >&2
+  fi
 else
-	echo "$bashrc_source" >~/.bashrc
-	echo "Created ~/.bashrc with bashrc source" >&2
+  echo "$bashrc_source" >~/.bashrc
+  echo "Created ~/.bashrc with bashrc source" >&2
 fi
 
 bash_profile_source="source \"$root_path/config/bash/bash_profile.bash\""
 if [[ -f ~/.bash_profile ]]; then
-	if ! grep -Fq "$bash_profile_source" ~/.bash_profile; then
-		echo "$bash_profile_source" >>~/.bash_profile
-		echo "Added bash_profile source to existing ~/.bash_profile" >&2
-	else
-		echo "bash_profile source already exists in ~/.bash_profile" >&2
-	fi
+  if ! grep -Fq "$bash_profile_source" ~/.bash_profile; then
+    echo "$bash_profile_source" >>~/.bash_profile
+    echo "Added bash_profile source to existing ~/.bash_profile" >&2
+  else
+    echo "bash_profile source already exists in ~/.bash_profile" >&2
+  fi
 else
-	echo "$bash_profile_source" >~/.bash_profile
-	echo "Created ~/.bash_profile with bash_profile source" >&2
+  echo "$bash_profile_source" >~/.bash_profile
+  echo "Created ~/.bash_profile with bash_profile source" >&2
 fi
 
 link_dir "$root_path/config/bash" "$HOME/.config/bash" "bash config directory"
