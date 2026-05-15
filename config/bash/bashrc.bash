@@ -29,21 +29,6 @@ export PATH="$HOME/.local/bin:$PATH"
 export CLICOLOR=1
 export LSCOLORS=exfxcxdxbxegedabagacad
 
-# asdf
-if [[ -d "$HOME/.asdf" ]]; then
-  if [[ -f "$HOME/.asdf/asdf.sh" ]]; then
-    source "$HOME/.asdf/asdf.sh"
-    source "$HOME/.asdf/completions/asdf.bash"
-  else
-    export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
-    source <(asdf completion bash)
-  fi
-
-  # asdf plugins
-  [[ -f "$HOME/.asdf/plugins/golang/set-env.bash" ]] && source "$HOME/.asdf/plugins/golang/set-env.bash"
-  [[ -f "$HOME/.asdf/plugins/java/set-java-home.bash" ]] && source "$HOME/.asdf/plugins/java/set-java-home.bash"
-fi
-
 # mise
 mise_bin=$(command -v mise 2>/dev/null) || mise_bin="$HOME/.local/bin/mise"
 if [[ -e "$mise_bin" ]]; then

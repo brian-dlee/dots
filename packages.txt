@@ -15,9 +15,8 @@ resvg
 7zip
 
 # Development
-asdf
-direnv
 just
+mise
 
 # Shell & terminal
 starship
