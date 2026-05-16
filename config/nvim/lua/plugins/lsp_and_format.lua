@@ -459,7 +459,6 @@ return {
         rust = { "rustfmt" },
         sh = { "shfmt" },
         sql = { "sqlfmt" },
-        toml = { "taplo" },
         typescript = jsts_formatters,
         typescriptreact = jsts_formatters,
         ["_"] = { "trim_whitespace" },

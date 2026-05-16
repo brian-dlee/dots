@@ -1,5 +1,6 @@
 [env]
 _.path = ["{{ cwd }}/node_modules/.bin", "{{ cwd }}/.venv/bin", "{{ cwd }}/bin"]
+_.file = {path = "{{ env.HOME }}/.config/mise/secrets.env", redact = true}
 MISE_GO_DEFAULT_PACKAGES_FILE = "{{env.HOME}}/.config/mise/default-go-packages"
 
 [tools]
