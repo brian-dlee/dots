@@ -35,6 +35,12 @@ if [[ -e "$mise_bin" ]]; then
   eval "$("$mise_bin" activate bash)"
 fi
 
+# fnox
+fnox_bin=$(command -v fnox 2>/dev/null)
+if [[ -e "$fnox_bin" ]]; then
+  eval "$("$fnox_bin" activate bash)"
+fi
+
 # bash customizations
 [[ ! -f "$HOME/.config/bash/customizations/00-common-aliases.bash" ]] || source "$HOME/.config/bash/customizations/00-common-aliases.bash"
 [[ ! -f "$HOME/.config/bash/customizations/01-clipboard.bash" ]] || source "$HOME/.config/bash/customizations/01-clipboard.bash"
@@ -48,9 +54,6 @@ if [[ "$(uname)" == "Darwin" ]]; then
     eval "$(/usr/local/bin/brew shellenv)"
   fi
 fi
-
-# direnv
-command -v direnv >/dev/null 2>&1 && eval "$(direnv hook bash)"
 
 # zoxide
 command -v zoxide >/dev/null 2>&1 && eval "$(zoxide init bash)"
