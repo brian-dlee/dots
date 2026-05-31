@@ -3,6 +3,9 @@ _.path = ["{{ cwd }}/node_modules/.bin", "{{ cwd }}/.venv/bin", "{{ cwd }}/bin"]
 _.file = {path = "{{ env.HOME }}/.config/mise/secrets.env", redact = true}
 MISE_GO_DEFAULT_PACKAGES_FILE = "{{env.HOME}}/.config/mise/default-go-packages"
 
+[settings.python]
+uv_venv_auto = true
+
 [tools]
 node = "latest"
 go = "latest"
@@ -15,9 +18,11 @@ zig = "latest"
 
 air = "latest"
 atlas = "latest"
+fnox = "latest"
 lefthook = "latest"
 jq = "latest"
 shfmt = "latest"
+"aqua:d-kuro/gwq" = "latest"
 
 "go:github.com/docker/docker-language-server/cmd/docker-language-server" = "latest"
 
